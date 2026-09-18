@@ -1,0 +1,23 @@
+{
+  "name": "nexora-aiot-system",
+  "version": "1.0.0",
+  "description": "NEXORA – AIoT Smart Rolling Barrier & Accident Response System (SIH Prototype)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  },
+  "keywords": [
+    "aiot",
+    "smart-highway",
+    "rolling-barrier",
+    "accident-detection",
+    "emergency-response",
+    "sih-prototype"
+  ],
+  "author": "Nexora Team",
+  "license": "MIT"
+}
