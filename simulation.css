@@ -1,0 +1,1007 @@
+/* ==========================================================================
+   NEXORA - Highway Simulation & Rolling Barrier Physics Styling
+   Section 5: Live Rolling Barrier Simulation (Heart of the Demo)
+   ========================================================================== */
+
+.sim-stage-wrapper {
+  background: #0f172a;
+  border-radius: var(--radius-lg);
+  border: 2px solid #334155;
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Simulation Top Bar Controls */
+.sim-top-bar {
+  background-color: #1e293b;
+  padding: 14px 24px;
+  border-bottom: 1px solid #334155;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.sim-status-indicators {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.sim-indicator-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #cbd5e1;
+}
+
+.sim-indicator-item .pill {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+.sim-indicator-item .pill.normal {
+  background-color: #064e3b;
+  color: #34d399;
+  border: 1px solid #059669;
+}
+
+.sim-indicator-item .pill.impact {
+  background-color: #7f1d1d;
+  color: #f87171;
+  border: 1px solid #dc2626;
+  animation: pulse-ring 0.8s infinite;
+}
+
+.sim-action-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Highway Simulation Viewport (Canvas / Stage) */
+.sim-viewport {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  overflow: hidden;
+}
+
+/* Road Geometry */
+.sim-road {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  right: 0;
+  height: 265px;
+  background-color: #1a2332;
+  border-top: 4px solid #64748b;
+  border-bottom: 4px solid #64748b;
+}
+
+.sim-road-lane {
+  position: absolute;
+  top: 44%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    #ffffff,
+    #ffffff 24px,
+    transparent 24px,
+    transparent 48px
+  );
+  transform: translateY(-50%);
+}
+
+.sim-road-shoulder {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: #f59e0b;
+  opacity: 0.7;
+}
+
+/* Rolling Barrier Section on Median / Shoulder */
+.sim-barrier-line {
+  position: absolute;
+  top: 215px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3px;
+  padding: 0 4px;
+  z-index: 25;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.barrier-rail {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background: linear-gradient(180deg, #94a3b8 0%, #475569 100%);
+  transform: translateY(-50%);
+  z-index: 24;
+  border-radius: 4px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Steel Highway Terminal Anchor Posts for Barrier Corners */
+.barrier-terminal-post {
+  width: 18px;
+  height: 46px;
+  background: linear-gradient(180deg, #f1f5f9 0%, #94a3b8 40%, #475569 80%, #1e293b 100%);
+  border: 2px solid #0f172a;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.7);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 27;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  box-sizing: border-box;
+}
+
+.barrier-terminal-post::before {
+  content: '';
+  width: 10px;
+  height: 6px;
+  background: #f59e0b;
+  border-radius: 2px;
+  box-shadow: 0 0 4px rgba(245, 158, 11, 0.8);
+}
+
+.barrier-terminal-post::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  background: #ef4444;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #ef4444;
+}
+
+/* Concrete Divider Terminal Cap */
+.concrete-terminal-cap {
+  width: 18px;
+  height: 100%;
+  background: linear-gradient(180deg, #94a3b8 0%, #475569 60%, #1e293b 100%);
+  border-right: 2px solid #0f172a;
+  border-left: 2px solid #0f172a;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.concrete-terminal-cap::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: #ef4444;
+  border-radius: 2px;
+  box-shadow: 0 0 6px #ef4444;
+}
+
+/* Individual Rolling Cylinders - Tightly Spaced Continuous Guardrail */
+.barrier-cylinder {
+  width: 34px;
+  height: 48px;
+  flex-shrink: 1;
+  min-width: 16px;
+  max-width: 38px;
+  margin: 0 1px;
+  background: repeating-linear-gradient(
+    45deg,
+    #f59e0b,
+    #f59e0b 9px,
+    #0f172a 9px,
+    #0f172a 18px
+  );
+  border-radius: 7px;
+  border: 2px solid #000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+  z-index: 26;
+  transition: transform 0.1s ease;
+  position: relative;
+}
+
+.barrier-cylinder.dual-cyl {
+  width: 26px;
+  height: 42px;
+  border-radius: 6px;
+  flex-shrink: 1;
+  min-width: 12px;
+  max-width: 30px;
+  margin: 0 1px;
+}
+
+.barrier-cylinder.target {
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.9), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+  border-color: #fbbf24;
+}
+
+.barrier-cylinder.target::after {
+  content: 'RB-023';
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #f59e0b;
+  color: #000;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+/* Rotating Cylinder Animation */
+.barrier-cylinder.rotating {
+  animation: cylinder-spin 0.22s linear infinite;
+}
+
+@keyframes cylinder-spin {
+  0% { background-position: 0 0; }
+  100% { background-position: 36px 0; }
+}
+
+/* Vehicle Element */
+.sim-vehicle {
+  position: absolute;
+  top: 80px;
+  left: -130px;
+  width: 86px;
+  height: 40px;
+  background: linear-gradient(90deg, #dc2626 0%, #991b1b 100%);
+  border-radius: 8px 16px 12px 6px;
+  border: 2px solid #ffffff;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+  z-index: 20;
+  transition: all 0.05s linear;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sim-vehicle-speed-tag {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(15, 23, 42, 0.92);
+  color: #f59e0b;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #f59e0b;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+  transition: all 0.25s ease;
+}
+
+.sim-vehicle-speed-tag.slowing {
+  background-color: rgba(220, 38, 38, 0.95);
+  color: #ffffff;
+  border-color: #ef4444;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+}
+
+.sim-vehicle-speed-tag.stopped {
+  background-color: rgba(5, 150, 105, 0.95);
+  color: #ffffff;
+  border-color: #34d399;
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.5);
+}
+
+/* Vehicle Headlights */
+.sim-vehicle-light {
+  position: absolute;
+  right: -6px;
+  width: 8px;
+  height: 10px;
+  background-color: #fef08a;
+  border-radius: 2px;
+  box-shadow: 12px 0 20px 8px rgba(254, 240, 138, 0.4);
+}
+
+.sim-vehicle-light.top { top: 5px; }
+.sim-vehicle-light.bottom { bottom: 5px; }
+
+/* Shockwave / Collision Impact Burst */
+.collision-burst {
+  position: absolute;
+  top: 205px;
+  left: 450px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.9) 0%, rgba(245, 158, 11, 0.5) 50%, transparent 70%);
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 28;
+}
+
+.collision-burst.active {
+  animation: burst-shockwave 0.8s ease-out forwards;
+}
+
+@keyframes burst-shockwave {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
+  50% { transform: translate(-50%, -50%) scale(1.6); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(2.4); opacity: 0; }
+}
+
+/* Rotational Energy Conversion Arrows */
+.energy-conversion-badge {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(15, 23, 42, 0.95);
+  border: 1px solid var(--color-safety-yellow);
+  color: #f8fafc;
+  padding: 6px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 700;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  z-index: 35;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+.energy-conversion-badge.active {
+  display: flex;
+}
+
+/* IoT Gateway Tower & LoRa Uplink */
+.sim-gateway-tower {
+  position: absolute;
+  top: 16px;
+  right: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  z-index: 20;
+}
+
+.gateway-antenna {
+  width: 32px;
+  height: 32px;
+  background-color: #1e3a8a;
+  border: 2px solid #3b82f6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 14px;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+.gateway-label {
+  font-size: 10px;
+  color: #94a3b8;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* LoRa Packet Trail Animation */
+.lora-packet-node {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #38bdf8;
+  box-shadow: 0 0 12px #38bdf8;
+  z-index: 25;
+  display: none;
+}
+
+/* 12-Step Live Progress Track Bar */
+.sim-stepper-track {
+  background-color: #0b1120;
+  padding: 16px 24px;
+  border-top: 1px solid #334155;
+}
+
+.sim-stepper-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #94a3b8;
+  font-weight: 700;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.sim-steps-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.sim-step-dot {
+  flex: 1;
+  min-width: 70px;
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  padding: 6px 4px;
+  text-align: center;
+  transition: all 0.25s ease;
+}
+
+.sim-step-dot .num {
+  font-size: 10px;
+  font-weight: 800;
+  color: #64748b;
+  display: block;
+}
+
+.sim-step-dot .txt {
+  font-size: 10px;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.sim-step-dot.active {
+  background-color: #1e3a8a;
+  border-color: #3b82f6;
+}
+
+.sim-step-dot.active .num {
+  color: #93c5fd;
+}
+
+.sim-step-dot.active .txt {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.sim-step-dot.completed {
+  background-color: #064e3b;
+  border-color: #059669;
+}
+
+.sim-step-dot.completed .num,
+.sim-step-dot.completed .txt {
+  color: #a7f3d0;
+}
+
+/* ==========================================================================
+   MODE SWITCHER BAR (NEXORA vs TRADITIONAL vs DUAL)
+   ========================================================================== */
+.sim-mode-switcher-container {
+  background-color: #0b1120;
+  padding: 12px 24px;
+  border-bottom: 1px solid #334155;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.sim-mode-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #94a3b8;
+  font-weight: 800;
+}
+
+.sim-mode-nav-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sim-mode-tab {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 8px 14px;
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.sim-mode-tab:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+.sim-mode-tab.active {
+  background: #1e3a8a;
+  border-color: #3b82f6;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+}
+
+.sim-mode-tab .tab-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.sim-mode-tab .tab-indicator.green { background-color: #10b981; }
+.sim-mode-tab .tab-indicator.red { background-color: #ef4444; }
+.sim-mode-tab .tab-indicator.yellow { background-color: #f59e0b; }
+
+.sim-mode-tab .tab-tag {
+  font-size: 9px;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.35);
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   TRADITIONAL RIGID CONCRETE DIVIDER STYLING
+   ========================================================================== */
+.sim-barrier-traditional {
+  position: absolute;
+  top: 205px;
+  left: 40px;
+  right: 40px;
+  height: 52px;
+  z-index: 25;
+  display: none;
+}
+
+.sim-barrier-traditional.active {
+  display: block;
+}
+
+.sim-concrete-barrier {
+  width: 100%;
+  height: 48px;
+  background: linear-gradient(180deg, #64748b 0%, #475569 45%, #334155 100%);
+  border-top: 3px solid #94a3b8;
+  border-bottom: 4px solid #1e293b;
+  border-radius: 3px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+}
+
+.concrete-segment {
+  flex: 1;
+  border-right: 2px solid #1e293b;
+  height: 100%;
+  position: relative;
+}
+
+.concrete-segment::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background: repeating-linear-gradient(
+    45deg,
+    #f59e0b,
+    #f59e0b 8px,
+    #000000 8px,
+    #000000 16px
+  );
+  opacity: 0.8;
+}
+
+.sim-concrete-label {
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ef4444;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.concrete-crack-mark {
+  position: absolute;
+  top: 4px;
+  left: 465px;
+  width: 30px;
+  height: 38px;
+  background: transparent;
+  border-left: 2px dashed #000;
+  border-right: 1px solid #1e293b;
+  transform: rotate(15deg);
+  opacity: 0;
+  z-index: 27;
+  transition: opacity 0.2s;
+}
+
+.concrete-crack-mark.active {
+  opacity: 1;
+}
+
+/* Crumpled Vehicle Deformation */
+.sim-vehicle.crumpled {
+  border-radius: 4px 6px 16px 4px !important;
+  background: linear-gradient(90deg, #991b1b 0%, #450a0a 100%) !important;
+  box-shadow: 0 0 15px rgba(220, 38, 38, 0.7) !important;
+  animation: vehicle-shudder 0.15s infinite;
+}
+
+@keyframes vehicle-shudder {
+  0% { transform: rotate(26deg) translate(0, 0); }
+  50% { transform: rotate(27deg) translate(-2px, 1px); }
+  100% { transform: rotate(26deg) translate(0, 0); }
+}
+
+.sim-vehicle-speed-tag.fatal {
+  background-color: #7f1d1d !important;
+  color: #ffffff !important;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.8) !important;
+  animation: pulse-ring 0.6s infinite;
+}
+
+/* ==========================================================================
+   DUAL SPLIT SYNCHRONIZED TRACK VIEW (SIDE-BY-SIDE LANES)
+   ========================================================================== */
+.sim-viewport.dual-view {
+  height: 380px;
+}
+
+.sim-dual-container {
+  display: none;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+}
+
+.sim-dual-container.active {
+  display: flex;
+}
+
+.sim-track-lane {
+  flex: 1 1 0;
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  border-bottom: none;
+}
+
+#dualTrackTrad {
+  border-right: 3px solid #334155;
+  box-shadow: inset -5px 0 14px rgba(0, 0, 0, 0.45);
+}
+
+#dualTrackNex {
+  box-shadow: inset 5px 0 14px rgba(0, 0, 0, 0.45);
+}
+
+.sim-track-topbar {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.sim-track-header-tag {
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 4px 9px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+}
+
+.sim-track-header-tag.trad {
+  background-color: #7f1d1d;
+  color: #fecaca;
+  border: 1px solid #ef4444;
+}
+
+.sim-track-header-tag.nex {
+  background-color: #064e3b;
+  color: #a7f3d0;
+  border: 1px solid #10b981;
+}
+
+.sim-track-result-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 9px;
+  border-radius: 4px;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid #475569;
+  color: #94a3b8;
+  pointer-events: auto;
+  white-space: nowrap;
+  max-width: 58%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.sim-track-result-badge.danger {
+  color: #fca5a5;
+  border-color: #dc2626;
+  background: rgba(127, 29, 29, 0.88);
+}
+
+.sim-track-result-badge.success {
+  color: #6ee7b7;
+  border-color: #059669;
+  background: rgba(6, 78, 59, 0.88);
+}
+
+/* ==========================================================================
+   COMPARISON SCOREBOARD & EFFECTIVENESS MATRIX
+   ========================================================================== */
+.sim-comparison-scoreboard {
+  margin-top: 28px;
+  background: #0b1120;
+  border: 2px solid #1e293b;
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  color: white;
+  box-shadow: var(--shadow-xl);
+}
+
+.comparison-scoreboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #334155;
+  padding-bottom: 18px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.comparison-scoreboard-header h3 {
+  font-size: 20px;
+  color: #ffffff;
+  margin-top: 4px;
+}
+
+.comparison-headline-metric {
+  text-align: right;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+}
+
+.comparison-headline-metric .metric-highlight {
+  font-size: 26px;
+  font-weight: 900;
+  color: #34d399;
+  display: block;
+}
+
+.comparison-headline-metric .metric-caption {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #93c5fd;
+  font-weight: 700;
+}
+
+.comparison-score-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.comp-score-card {
+  background: #131d31;
+  border: 1px solid #334155;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.comp-card-title {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #94a3b8;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.comp-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.comp-bar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.comp-bar-item .lbl {
+  font-size: 10px;
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+.comp-bar-item .bar-track {
+  width: 100%;
+  height: 18px;
+  background: #1e293b;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.comp-bar-item.bad .bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%);
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  padding-left: 6px;
+  white-space: nowrap;
+  transition: width 0.8s ease;
+}
+
+.comp-bar-item.good .bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #059669 0%, #10b981 100%);
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  padding-left: 6px;
+  white-space: nowrap;
+  transition: width 0.8s ease;
+}
+
+.comp-verdict {
+  font-size: 11px;
+  font-weight: 700;
+  padding-top: 8px;
+  border-top: 1px dashed #334155;
+  color: #34d399;
+  line-height: 1.4;
+}
+
+.comp-matrix-table-wrap {
+  background: #131d31;
+  border: 1px solid #334155;
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+}
+
+.comp-matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  text-align: left;
+}
+
+.comp-matrix-table th {
+  background-color: #1e293b;
+  color: #94a3b8;
+  padding: 12px 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #334155;
+}
+
+.comp-matrix-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #1e293b;
+  color: #e2e8f0;
+}
+
+.comp-matrix-table tr:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+@media (max-width: 1024px) {
+  .comparison-score-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 868px) {
+  .sim-viewport.dual-view {
+    height: 640px;
+  }
+  .sim-dual-container {
+    flex-direction: column;
+  }
+  #dualTrackTrad {
+    border-right: none;
+    border-bottom: 3px solid #334155;
+    box-shadow: inset 0 -4px 10px rgba(0, 0, 0, 0.45);
+  }
+  #dualTrackNex {
+    box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.45);
+  }
+  .sim-track-lane {
+    height: 50%;
+  }
+}
+
+@media (max-width: 768px) {
+  .comparison-score-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .sim-mode-switcher-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+

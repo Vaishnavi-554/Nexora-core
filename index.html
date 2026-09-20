@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXORA – AIoT Smart Rolling Barrier & Accident Response System | SIH Prototype</title>
+  <meta name="description" content="Turning highway barriers into intelligent safety infrastructure. Multi-sensor AIoT collision absorption, detection, and automated emergency dispatch.">
+  
+  <!-- Leaflet CSS for Interactive Highway Corridor Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  
+  <!-- Core Design System -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/simulation.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+  <!-- =========================================================================
+       SECTION 17: STICKY NAVIGATION BAR
+       ========================================================================= -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="#heroSection" class="logo-brand">
+        <div class="brand-icon">NX</div>
+        <div>
+          <div class="brand-title">NEXORA</div>
+          <span class="brand-subtitle">AIoT Highway Safety</span>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#heroSection" class="active">Home</a></li>
+        <li><a href="#problemSection">Problem</a></li>
+        <li><a href="#solutionSection">Solution</a></li>
+        <li><a href="#simulationSection">Live Demo</a></li>
+        <li><a href="#monitoringSection">Monitoring</a></li>
+        <li><a href="#commandCenterSection">Emergency Center</a></li>
+        <li><a href="#technologySection">Technology</a></li>
+        <li><a href="#aboutSection">About</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="btn btn-jury btn-sm" id="btnLaunchJuryMode">
+          <span>⚡ JURY DEMO MODE</span>
+        </button>
+        <a href="#simulationSection" class="btn btn-primary btn-sm">LAUNCH DEMO</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- =========================================================================
+         SECTION 2: HERO SECTION & HIGHWAY VISUAL
+         ========================================================================= -->
+    <section class="hero-section" id="heroSection">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <div class="hero-badge-row">
+            <span class="badge badge-blue"><span class="pulse-dot"></span> SIH INNOVATION PROTOTYPE</span>
+            <span class="badge badge-yellow">SMART HIGHWAY INFRASTRUCTURE</span>
+          </div>
+
+          <h1 class="hero-headline">NEXORA<span>.</span></h1>
+          <h2 class="hero-subheadline">Smart Rolling Barriers for Faster Accident Detection & Emergency Response</h2>
+          <p class="hero-support-text">Turning passive highway barriers into connected, intelligent safety infrastructure that absorbs collision impact and notifies emergency services in seconds.</p>
+
+          <div class="hero-cta-group">
+            <a href="#simulationSection" class="btn btn-primary btn-lg">LAUNCH LIVE DEMO</a>
+            <a href="#solutionSection" class="btn btn-secondary btn-lg">EXPLORE THE SYSTEM</a>
+            <button class="btn btn-jury btn-lg" id="btnHeroJuryDemo">⚡ JURY DEMO MODE (INSTANT CRASH COMPARISON)</button>
+          </div>
+
+          <!-- Visual Flow Diagram -->
+          <div class="hero-flow-container">
+            <div class="flow-title"><span>🔄</span> REAL-TIME ARCHITECTURAL PIPELINE</div>
+            <div class="hero-flow-strip">
+              <span class="flow-node highlight">VEHICLE IMPACT</span>
+              <span class="flow-arrow">→</span>
+              <span class="flow-node">ROLLING BARRIER</span>
+              <span class="flow-arrow">→</span>
+              <span class="flow-node">SENSOR DETECTION</span>
+              <span class="flow-arrow">→</span>
+              <span class="flow-node">IoT GATEWAY (10km)</span>
+              <span class="flow-arrow">→</span>
+              <span class="flow-node">CLOUD BACKEND</span>
+              <span class="flow-arrow">→</span>
+              <span class="flow-node emergency">EMERGENCY ALERT</span>
+              <span class="flow-arrow">→</span>
+              <span class="flow-node">POLICE + HOSPITAL + EMS</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Technical Visual Card -->
+        <div class="hero-visual-card">
+          <div class="hero-visual-header">
+            <div>
+              <span style="font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700;">LIVE CORRIDOR MONITOR</span>
+              <h4 style="font-size: 15px; margin-top: 2px;">Section: KM 126.4 • Gateway 03</h4>
+            </div>
+            <span class="badge badge-green"><span class="pulse-dot"></span> EDGE ACTIVE</span>
+          </div>
+
+          <!-- Visual Highway Diagram -->
+          <div class="hero-visual-canvas">
+            <svg viewBox="0 0 500 250" style="width: 100%; height: 100%;">
+              <!-- Highway Road Surface -->
+              <rect x="0" y="30" width="500" height="190" fill="#1e293b" />
+              <!-- Road Median Divider Line -->
+              <line x1="0" y1="125" x2="500" y2="125" stroke="#94a3b8" stroke-width="2" stroke-dasharray="16 16" />
+              <!-- Shoulder Lines -->
+              <line x1="0" y1="40" x2="500" y2="40" stroke="#f59e0b" stroke-width="3" opacity="0.8" />
+              <line x1="0" y1="210" x2="500" y2="210" stroke="#f59e0b" stroke-width="3" opacity="0.8" />
+              
+              <!-- Rolling Barrier Rail Structure -->
+              <rect x="20" y="118" width="460" height="14" rx="4" fill="#64748b" />
+
+              <!-- Cylinders (Alternating Yellow/Black Hazard Bands) -->
+              <g id="heroBarriersGroup">
+                <!-- Cylinders 1 through 8 -->
+                <rect x="40" y="105" width="28" height="40" rx="6" fill="#f59e0b" stroke="#000" stroke-width="2" />
+                <rect x="40" y="118" width="28" height="12" fill="#0f172a" />
+
+                <rect x="100" y="105" width="28" height="40" rx="6" fill="#f59e0b" stroke="#000" stroke-width="2" />
+                <rect x="100" y="118" width="28" height="12" fill="#0f172a" />
+
+                <rect x="160" y="105" width="28" height="40" rx="6" fill="#f59e0b" stroke="#000" stroke-width="2" />
+                <rect x="160" y="118" width="28" height="12" fill="#0f172a" />
+
+                <rect x="220" y="105" width="28" height="40" rx="6" fill="#f59e0b" stroke="#000" stroke-width="2" />
+                <rect x="220" y="118" width="28" height="12" fill="#0f172a" />
+
+                <!-- Target Barrier Module RB-023 -->
+                <rect x="280" y="105" width="28" height="40" rx="6" fill="#f59e0b" stroke="#ef4444" stroke-width="2.5" />
+                <rect x="280" y="118" width="28" height="12" fill="#0f172a" />
+                <text x="294" y="160" font-size="9" fill="#f59e0b" text-anchor="middle" font-weight="bold">RB-023</text>
+
+                <rect x="340" y="105" width="28" height="40" rx="6" fill="#f59e0b" stroke="#000" stroke-width="2" />
+                <rect x="340" y="118" width="28" height="12" fill="#0f172a" />
+
+                <rect x="400" y="105" width="28" height="40" rx="6" fill="#f59e0b" stroke="#000" stroke-width="2" />
+                <rect x="400" y="118" width="28" height="12" fill="#0f172a" />
+              </g>
+
+              <!-- Highway Vehicle Moving in Lane -->
+              <rect x="70" y="60" width="70" height="34" rx="6" fill="#2563eb" stroke="#ffffff" stroke-width="1.5" />
+              <circle cx="85" cy="94" r="5" fill="#0f172a" />
+              <circle cx="125" cy="94" r="5" fill="#0f172a" />
+              <!-- Headlight Beam -->
+              <polygon points="140,64 210,50 210,88 140,84" fill="rgba(254, 240, 138, 0.15)" />
+
+              <!-- Gateway Tower Icon -->
+              <circle cx="450" cy="50" r="14" fill="#1e3a8a" stroke="#60a5fa" stroke-width="2" />
+              <text x="450" y="54" font-size="12" fill="#fff" text-anchor="middle">📡</text>
+              <text x="450" y="74" font-size="9" fill="#94a3b8" text-anchor="middle" font-weight="bold">LoRa GW</text>
+            </svg>
+          </div>
+
+          <div class="hero-visual-telemetry">
+            <div class="telemetry-tile">
+              <span class="lbl">Accelerometer</span>
+              <div class="val" style="color: #38bdf8;">0.98 g</div>
+            </div>
+            <div class="telemetry-tile">
+              <span class="lbl">Impact Force</span>
+              <div class="val" style="color: #f59e0b;">0.0 kN</div>
+            </div>
+            <div class="telemetry-tile">
+              <span class="lbl">Tilt Angle</span>
+              <div class="val" style="color: #34d399;">2.1°</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 3: THE PROBLEM WITH RIGID DIVIDERS
+         ========================================================================= -->
+    <section class="section section-alt" id="problemSection">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">HIGHWAY CRASH SAFETY CHALLENGE</span>
+          <h2 class="section-title">THE PROBLEM WITH RIGID DIVIDERS</h2>
+          <p class="section-desc">Traditional concrete medians and steel W-beams stop vehicles abruptly with catastrophic kinetic shock, often remaining unmonitored for long periods.</p>
+        </div>
+
+        <div class="comparison-grid">
+          <!-- Left: Traditional Rigid Divider -->
+          <div class="comparison-card bad">
+            <span class="badge badge-red card-badge-status">PASSIVE & RIGID</span>
+            <h3>Traditional Rigid Divider</h3>
+            <p>Rigid concrete barriers or stiff steel guardrails that do not dissipate vehicle momentum.</p>
+
+            <div class="comparison-mechanic">
+              Vehicle Collision ➔ Rigid Obstacle ➔ Sudden Deceleration & Crushing Impact
+            </div>
+
+            <ul class="problem-list">
+              <li><span class="icon">❌</span> <strong>High Impact Shockwave:</strong> Severe deceleration causes internal injuries and fatal trauma.</li>
+              <li><span class="icon">❌</span> <strong>Extreme Vehicle Damage:</strong> High probability of rollover, roof crush, or rebounding into oncoming traffic.</li>
+              <li><span class="icon">❌</span> <strong>Infrastructure Crumble:</strong> Expensive concrete cracking requiring prolonged highway lane closures.</li>
+              <li><span class="icon">❌</span> <strong>Unnoticed Remote Crashes:</strong> Nighttime or blind-curve accidents remain unreported for 20–40 minutes.</li>
+              <li><span class="icon">❌</span> <strong>Golden Hour Delay:</strong> Critical medical treatment is delayed due to vague caller locations.</li>
+            </ul>
+          </div>
+
+          <!-- Right: Smart Rolling Barrier -->
+          <div class="comparison-card good">
+            <span class="badge badge-blue card-badge-status">INTELLIGENT & ROTATIONAL</span>
+            <h3>Smart Rolling Barrier (NEXORA)</h3>
+            <p>Engineered cylindrical rollers converting crash energy into safe rotational deflection with edge AIoT monitoring.</p>
+
+            <div class="comparison-mechanic">
+              Vehicle Collision ➔ Rotating Cylinders ➔ Energy Conversion ➔ IoT Telemetry ➔ Emergency Dispatch
+            </div>
+
+            <ul class="problem-list">
+              <li><span class="icon">✅</span> <strong>Rotational Energy Absorption:</strong> Cylinders spin on impact, gradually decelerating the vehicle safely.</li>
+              <li><span class="icon">✅</span> <strong>Deflection Control:</strong> Re-guides colliding vehicles back along the road direction, preventing rollovers.</li>
+              <li><span class="icon">✅</span> <strong>Instant Millisecond Detection:</strong> Accelerometer + Load Cell + Tilt sensors detect collision instantly.</li>
+              <li><span class="icon">✅</span> <strong>Sub-3-Second Alerts:</strong> Automated emergency API dispatches to Police, Hospital, and Ambulances.</li>
+              <li><span class="icon">✅</span> <strong>Precise GIS Coordinates:</strong> Pinpoints the exact barrier ID and highway kilometer marker.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="solution-callout-banner">
+          <p>“From passive highway barrier to intelligent, life-saving safety infrastructure.”</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 4: HOW OUR SOLUTION WORKS (6 STEPS)
+         ========================================================================= -->
+    <section class="section" id="solutionSection">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">ENGINEERING ARCHITECTURE</span>
+          <h2 class="section-title">HOW OUR SOLUTION WORKS</h2>
+          <p class="section-desc">A 6-stage closed-loop pipeline from kinetic impact absorption to multi-agency emergency rescue dispatch.</p>
+        </div>
+
+        <div class="architecture-steps">
+          <!-- Step 1 -->
+          <div class="step-card">
+            <div class="step-number">01</div>
+            <h4>VEHICLE IMPACT</h4>
+            <p>A vehicle departs its lane and collides with the rolling barrier on a highway curve or median.</p>
+            <div class="step-sub-card-group">
+              <div class="sensor-mini-card">
+                <span class="name">Event</span>
+                <span class="val">Kinetic Collision</span>
+              </div>
+              <div class="sensor-mini-card">
+                <span class="name">Contact Vector</span>
+                <span class="val">15° – 25° Angle</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="step-card">
+            <div class="step-number">02</div>
+            <h4>IMPACT ABSORPTION</h4>
+            <p>High-density rolling cylinders rotate rapidly to convert severe kinetic crash energy into rotational motion.</p>
+            <div class="rotating-cylinder-preview">
+              <div class="roller-model spinning"></div>
+              <div class="roller-model spinning"></div>
+              <div class="roller-model spinning"></div>
+              <div class="roller-model spinning"></div>
+              <div class="roller-model spinning"></div>
+            </div>
+            <div style="font-size: 11px; text-align: center; color: #f59e0b; font-weight: bold;">
+              Impact Energy ➔ Rotational Energy
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="step-card">
+            <div class="step-number">03</div>
+            <h4>SENSOR DETECTION</h4>
+            <p>Three integrated edge sensors measure kinetic shockwave, collision force, and structural displacement.</p>
+            <div class="step-sub-card-group">
+              <div class="sensor-mini-card">
+                <span class="name">ACCELEROMETER</span>
+                <span class="val">Spike to 4.8g</span>
+              </div>
+              <div class="sensor-mini-card">
+                <span class="name">LOAD CELL</span>
+                <span class="val">Collision 38.5 kN</span>
+              </div>
+              <div class="sensor-mini-card">
+                <span class="name">TILT SENSOR</span>
+                <span class="val">Deflection 18°</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="step-card">
+            <div class="step-number">04</div>
+            <h4>IoT GATEWAY ZONE</h4>
+            <p>Every 10 km, a solar-backed Raspberry Pi + LoRa concentrator gateway receives telemetry from barrier nodes.</p>
+            <div class="step-sub-card-group">
+              <div class="sensor-mini-card">
+                <span class="name">Radio Protocol</span>
+                <span class="val">LoRaWAN 868 MHz</span>
+              </div>
+              <div class="sensor-mini-card">
+                <span class="name">Telemetry Fields</span>
+                <span class="val">ID, Force, Accel, Tilt, GPS</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="step-card">
+            <div class="step-number">05</div>
+            <h4>CLOUD / BACKEND ENGINE</h4>
+            <p>Node.js backend validates telemetry, executes sensor fusion triage, classifies severity, and logs to MySQL.</p>
+            <div class="step-sub-card-group">
+              <div class="sensor-mini-card">
+                <span class="name">Sensor Fusion</span>
+                <span class="val">Triple-Cross Triangulation</span>
+              </div>
+              <div class="sensor-mini-card">
+                <span class="name">False Alarm Rejection</span>
+                <span class="val">Vibration / Wind Filter</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 6 -->
+          <div class="step-card">
+            <div class="step-number">06</div>
+            <h4>EMERGENCY RESPONSE</h4>
+            <p>Instantaneous multi-agency notification with GIS coordinates and severity classification dispatched simultaneously.</p>
+            <div class="step-sub-card-group">
+              <div class="sensor-mini-card">
+                <span class="name">POLICE</span>
+                <span class="val">Hazard Flag / Lane Clear</span>
+              </div>
+              <div class="sensor-mini-card">
+                <span class="name">HOSPITAL</span>
+                <span class="val">Trauma Triage Prep</span>
+              </div>
+              <div class="sensor-mini-card">
+                <span class="name">AMBULANCE</span>
+                <span class="val">GPS Navigation Route</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 5: LIVE SYSTEM DEMO (HEART OF THE PROTOTYPE)
+         ========================================================================= -->
+    <section class="section section-dark" id="simulationSection">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag yellow">HEART OF THE SIH PROTOTYPE</span>
+          <h2 class="section-title">LIVE ROLLING BARRIER SIMULATION</h2>
+          <p class="section-desc">Interactive physics & telemetry simulator demonstrating real-time collision absorption, sensor triggering, LoRa gateway uplink, and automated emergency alert generation.</p>
+        </div>
+
+        <div class="sim-stage-wrapper">
+          <!-- Technology Comparison Mode Selector Bar -->
+          <div class="sim-mode-switcher-container">
+            <div class="sim-mode-label">SELECT COMPARISON MODE:</div>
+            <div class="sim-mode-nav-tabs">
+              <button class="sim-mode-tab active" id="btnModeDual" type="button">
+                <span class="tab-indicator yellow"></span>
+                <span>⚖️ Simultaneous Dual Comparison</span>
+                <span class="tab-tag" style="color:#fbbf24;">RUN BOTH</span>
+              </button>
+              <button class="sim-mode-tab" id="btnModeNexora" type="button">
+                <span class="tab-indicator green"></span>
+                <span>🟡 NEXORA Rolling Barrier Only</span>
+                <span class="tab-tag" style="color:#34d399;">OUR SOLUTION</span>
+              </button>
+              <button class="sim-mode-tab" id="btnModeTraditional" type="button">
+                <span class="tab-indicator red"></span>
+                <span>🧱 Traditional Rigid Divider Only</span>
+                <span class="tab-tag" style="color:#f87171;">HIGH RISK</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Top Control Bar -->
+          <div class="sim-top-bar">
+            <div class="sim-status-indicators">
+              <div class="sim-indicator-item">
+                SYSTEM: <span class="pill normal" id="simPillSystem">ONLINE</span>
+              </div>
+              <div class="sim-indicator-item">
+                BARRIER RB-023: <span class="pill normal" id="simPillBarrier">HEALTHY</span>
+              </div>
+              <div class="sim-indicator-item">
+                ACTIVE ACCIDENTS: <span class="pill normal" id="simPillAccident">0</span>
+              </div>
+            </div>
+
+            <div class="sim-action-controls">
+              <button class="btn btn-emergency btn-sm" id="btnSimulateAccident">
+                <span>💥 SIMULATE ACCIDENT (RUN BOTH SIMULTANEOUSLY)</span>
+              </button>
+              <button class="btn btn-secondary btn-sm" id="btnResetSimulation">
+                <span>↺ RESET SIMULATION</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Highway Viewport Stage (Default to Dual View) -->
+          <div class="sim-viewport dual-view" id="simViewport">
+            <!-- Road Asphalt (Single View) -->
+            <div class="sim-road" id="simRoadSingle" style="display: none;">
+              <div class="sim-road-shoulder"></div>
+              <div class="sim-road-lane"></div>
+            </div>
+
+            <!-- NEXORA Rolling Barrier Line (Single View - Tightly Spaced Continuous Guardrail) -->
+            <div class="sim-barrier-line" id="simBarrierLineNexora" style="display: none; top: 215px; left: 0; right: 0; width: 100%;">
+              <div class="barrier-rail"></div>
+              <div class="barrier-terminal-post start"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder target" id="barrierTarget"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-terminal-post end"></div>
+            </div>
+
+            <!-- TRADITIONAL RIGID CONCRETE DIVIDER (Single View) -->
+            <div class="sim-barrier-traditional" id="simBarrierLineTrad">
+              <div class="sim-concrete-barrier" style="left: 0; right: 0; width: 100%;">
+                <div class="concrete-terminal-cap start"></div>
+                <div class="concrete-segment"></div>
+                <div class="concrete-segment"></div>
+                <div class="concrete-segment"></div>
+                <div class="concrete-segment"></div>
+                <div class="concrete-segment"></div>
+                <div class="concrete-segment"></div>
+                <div class="concrete-segment"></div>
+                <div class="concrete-segment"></div>
+                <div class="concrete-segment"></div>
+                <div class="concrete-segment"></div>
+                <div class="concrete-terminal-cap end"></div>
+              </div>
+              <div class="sim-concrete-label">UNMONITORED RIGID CONCRETE DIVIDER (NO SENSORS)</div>
+              <div class="concrete-crack-mark" id="concreteCrackMark"></div>
+            </div>
+
+            <!-- Moving Simulation Vehicle (Single View) -->
+            <div class="sim-vehicle" id="simVehicle" style="display: none;">
+              <div class="sim-vehicle-speed-tag" id="simVehicleSpeedTag">82 km/h</div>
+              <div class="sim-vehicle-light top"></div>
+              <div class="sim-vehicle-light bottom"></div>
+            </div>
+
+            <!-- DUAL SYNCHRONIZED COMPARISON VIEW TRACKS (SIDE-BY-SIDE ON DESKTOP, ACTIVE DEFAULT) -->
+            <div class="sim-dual-container active" id="simDualContainer">
+              <!-- Left Track: Traditional Rigid Barrier -->
+              <div class="sim-track-lane" id="dualTrackTrad">
+                <div class="sim-track-topbar">
+                  <div class="sim-track-header-tag trad">
+                    <span>🧱 TRACK 1: TRADITIONAL RIGID CONCRETE</span>
+                  </div>
+                  <div class="sim-track-result-badge" id="dualResultBadgeTrad">
+                    WAITING FOR SIMULATION
+                  </div>
+                </div>
+                <div class="sim-road" style="top: 42px; height: 275px;">
+                  <div class="sim-road-shoulder" style="top: 8px;"></div>
+                  <div class="sim-road-lane" style="top: 48%;"></div>
+                </div>
+                <!-- Concrete Divider in Dual View (Edge-to-Edge with Terminal Caps) -->
+                <div class="sim-concrete-barrier" style="position: absolute; top: 215px; left: 0; right: 0; width: 100%; height: 46px; z-index: 25;">
+                  <div class="concrete-terminal-cap start"></div>
+                  <div class="concrete-segment"></div>
+                  <div class="concrete-segment"></div>
+                  <div class="concrete-segment"></div>
+                  <div class="concrete-segment"></div>
+                  <div class="concrete-segment"></div>
+                  <div class="concrete-segment"></div>
+                  <div class="concrete-segment"></div>
+                  <div class="concrete-segment"></div>
+                  <div class="concrete-segment"></div>
+                  <div class="concrete-segment"></div>
+                  <div class="concrete-terminal-cap end"></div>
+                </div>
+                <!-- Vehicle 1 -->
+                <div class="sim-vehicle" id="simVehicleDualTrad" style="top: 90px; left: -100px; width: 80px; height: 38px; z-index: 20;">
+                  <div class="sim-vehicle-speed-tag" id="simSpeedTagDualTrad">82 km/h</div>
+                  <div class="sim-vehicle-light top"></div>
+                  <div class="sim-vehicle-light bottom"></div>
+                </div>
+                <!-- Dual Crack -->
+                <div class="concrete-crack-mark" id="dualCrackMark" style="top: 215px; left: 220px;"></div>
+                <!-- Dual Burst 1 -->
+                <div class="collision-burst" id="dualBurstTrad" style="top: 215px; left: 220px;"></div>
+              </div>
+
+              <!-- Right Track: NEXORA Smart Rolling Barrier -->
+              <div class="sim-track-lane" id="dualTrackNex">
+                <div class="sim-track-topbar">
+                  <div class="sim-track-header-tag nex">
+                    <span>🟡 TRACK 2: NEXORA SMART ROLLING BARRIER</span>
+                  </div>
+                  <div class="sim-track-result-badge" id="dualResultBadgeNex">
+                    WAITING FOR SIMULATION
+                  </div>
+                </div>
+                <div class="sim-road" style="top: 42px; height: 275px;">
+                  <div class="sim-road-shoulder" style="top: 8px;"></div>
+                  <div class="sim-road-lane" style="top: 48%;"></div>
+                </div>
+                <!-- Dual Energy Conversion Visual Indicator -->
+                <div class="energy-conversion-badge" id="dualEnergyBadge" style="top: 44px; left: 50%; transform: translateX(-50%); font-size: 10px; padding: 3px 10px; z-index: 32;">
+                  <span>🔄 ROTATIONAL ENERGY CONVERSION (CYLINDERS DISSIPATING IMPACT)</span>
+                </div>
+                <!-- 10km LoRa Gateway Tower in Dual View -->
+                <div class="sim-gateway-tower" id="dualGatewayTower" style="top: 42px; right: 14px; z-index: 28;">
+                  <div class="gateway-antenna">📡</div>
+                  <div class="gateway-label">GATEWAY 03<br>(10 KM LORA)</div>
+                </div>
+                <!-- Flying LoRa Telemetry Packet (Dual Track) -->
+                <div class="lora-packet-node" id="dualLoraPacket" style="display: none; z-index: 29;"></div>
+                <!-- Rolling Barrier in Dual View (Edge-to-Edge with Terminal Posts & Continuous Cylinders) -->
+                <div class="sim-barrier-line" style="top: 215px; left: 0; right: 0; width: 100%; height: 48px; z-index: 25;">
+                  <div class="barrier-rail"></div>
+                  <div class="barrier-terminal-post start"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl target" id="barrierTargetDual"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-terminal-post end"></div>
+                </div>
+                <!-- Vehicle 2 -->
+                <div class="sim-vehicle" id="simVehicleDualNex" style="top: 90px; left: -100px; width: 80px; height: 38px; z-index: 20;">
+                  <div class="sim-vehicle-speed-tag" id="simSpeedTagDualNex">82 km/h</div>
+                  <div class="sim-vehicle-light top"></div>
+                  <div class="sim-vehicle-light bottom"></div>
+                </div>
+                <!-- Dual Burst 2 -->
+                <div class="collision-burst" id="dualBurstNex" style="top: 215px; left: 220px;"></div>
+              </div>
+            </div>
+
+            <!-- Impact Burst Shockwave (Single View) -->
+            <div class="collision-burst" id="collisionBurst"></div>
+
+            <!-- Energy Conversion Visual Indicator (Single View) -->
+            <div class="energy-conversion-badge" id="energyConversionBadge">
+              <span>🔄 IMPACT ENERGY ➔ ROTATIONAL ENERGY (CYLINDERS ROTATING)</span>
+            </div>
+
+            <!-- 10km LoRa Gateway Tower (Single View) -->
+            <div class="sim-gateway-tower" id="simGatewayTower" style="display: none;">
+              <div class="gateway-antenna">📡</div>
+              <div class="gateway-label">GATEWAY 03<br>(10 KM ZONE)</div>
+            </div>
+
+            <!-- Flying LoRa Telemetry Packet Node (Single View) -->
+            <div class="lora-packet-node" id="loraPacketNode"></div>
+          </div>
+
+          <!-- 12-Step Progress Stepper -->
+          <div class="sim-stepper-track">
+            <div class="sim-stepper-label">
+              <span>AUTOMATED EVENT EXECUTION PIPELINE</span>
+              <span id="currentStepStatusLabel" style="color: #f59e0b;">SYSTEM READY — CLICK SIMULATE</span>
+            </div>
+            <div class="sim-steps-container" id="simStepsContainer"></div>
+          </div>
+
+          <!-- Dynamic Comparison Scoreboard & Effectiveness Matrix -->
+          <div class="sim-comparison-scoreboard" id="simComparisonScoreboard">
+            <div class="comparison-scoreboard-header">
+              <div>
+                <span class="badge badge-yellow">LIVE CRASH SAFETY BENCHMARK</span>
+                <h3>TRADITIONAL RIGID BARRIER vs. NEXORA SMART ROLLING BARRIER</h3>
+                <p style="font-size: 13px; color: #94a3b8; margin: 0;">Comparing identical 82 km/h crash dynamics, energy dissipation, and emergency dispatch latency.</p>
+              </div>
+              <div class="comparison-headline-metric">
+                <span class="metric-highlight">73%</span>
+                <span class="metric-caption">LESS CRASH FORCE &amp; 95% FASTER RESCUE</span>
+              </div>
+            </div>
+
+            <!-- Comparative Score Cards -->
+            <div class="comparison-score-cards-grid">
+              <div class="comp-score-card">
+                <div class="comp-card-title">COLLISION IMPACT FORCE</div>
+                <div class="comp-bars">
+                  <div class="comp-bar-item bad">
+                    <span class="lbl">Traditional Divider: 142.5 kN (Crushing)</span>
+                    <div class="bar-track"><div class="bar-fill" style="width: 95%;">142.5 kN</div></div>
+                  </div>
+                  <div class="comp-bar-item good">
+                    <span class="lbl">NEXORA Rolling Barrier: 38.5 kN (Absorbed)</span>
+                    <div class="bar-track"><div class="bar-fill" style="width: 27%;">38.5 kN</div></div>
+                  </div>
+                </div>
+                <div class="comp-verdict">✓ 73% Impact Force Dissipated via Rotational Energy</div>
+              </div>
+
+              <div class="comp-score-card">
+                <div class="comp-card-title">PEAK G-FORCE (DECELERATION)</div>
+                <div class="comp-bars">
+                  <div class="comp-bar-item bad">
+                    <span class="lbl">Traditional Divider: 18.4 g (Fatal Trauma)</span>
+                    <div class="bar-track"><div class="bar-fill" style="width: 92%;">18.4 g</div></div>
+                  </div>
+                  <div class="comp-bar-item good">
+                    <span class="lbl">NEXORA Rolling Barrier: 4.8 g (Survivable)</span>
+                    <div class="bar-track"><div class="bar-fill" style="width: 26%;">4.8 g</div></div>
+                  </div>
+                </div>
+                <div class="comp-verdict">✓ 74% Lower G-Force Prevents Severe Internal Deceleration Trauma</div>
+              </div>
+
+              <div class="comp-score-card">
+                <div class="comp-card-title">CRASH DETECTION TIME</div>
+                <div class="comp-bars">
+                  <div class="comp-bar-item bad">
+                    <span class="lbl">Traditional Divider: No Detection (Blindspot)</span>
+                    <div class="bar-track"><div class="bar-fill" style="width: 100%;">None</div></div>
+                  </div>
+                  <div class="comp-bar-item good">
+                    <span class="lbl">NEXORA Rolling Barrier: 0.05 Seconds</span>
+                    <div class="bar-track"><div class="bar-fill" style="width: 15%;">0.05 s</div></div>
+                  </div>
+                </div>
+                <div class="comp-verdict">✓ Autonomous Tri-Sensor Trigger Eliminates Blindspot Delays</div>
+              </div>
+
+              <div class="comp-score-card">
+                <div class="comp-card-title">EMERGENCY DISPATCH LATENCY</div>
+                <div class="comp-bars">
+                  <div class="comp-bar-item bad">
+                    <span class="lbl">Traditional Divider: 25–45 Mins (Passerby Call)</span>
+                    <div class="bar-track"><div class="bar-fill" style="width: 90%;">~35 Mins</div></div>
+                  </div>
+                  <div class="comp-bar-item good">
+                    <span class="lbl">NEXORA Rolling Barrier: 2.4 Seconds (Auto API)</span>
+                    <div class="bar-track"><div class="bar-fill" style="width: 12%;">2.4 s</div></div>
+                  </div>
+                </div>
+                <div class="comp-verdict">✓ Instant Golden Hour Notification to Police, Trauma Hospital &amp; EMS</div>
+              </div>
+            </div>
+
+            <!-- Comparative Feature Matrix -->
+            <div class="comp-matrix-table-wrap">
+              <table class="comp-matrix-table">
+                <thead>
+                  <tr>
+                    <th>SAFETY &amp; OPERATIONAL CRITERIA</th>
+                    <th>TRADITIONAL RIGID DIVIDER</th>
+                    <th>NEXORA SMART ROLLING BARRIER</th>
+                    <th>MEASURABLE EFFECTIVENESS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Crash Kinetic Energy Handling</strong></td>
+                    <td><span class="badge badge-red">Crushing Dead Stop</span> (100% vehicle &amp; passenger crush)</td>
+                    <td><span class="badge badge-green">Rotational Dissipation</span> (Energy converted to spin)</td>
+                    <td><strong style="color: #10b981;">-73% Peak Force</strong></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Vehicle Trajectory After Impact</strong></td>
+                    <td><span class="badge badge-red">Rebound / Rollover</span> into high-speed oncoming traffic</td>
+                    <td><span class="badge badge-green">Controlled Deflection</span> smoothly along road shoulder</td>
+                    <td><strong style="color: #10b981;">Prevents Secondary Multi-Car Pileups</strong></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Accident Location Reporting</strong></td>
+                    <td><span class="badge badge-red">Manual &amp; Vague</span> (Passerby phone descriptions)</td>
+                    <td><span class="badge badge-green">Exact GIS Coordinates</span> (e.g. Barrier RB-023 KM 126.4)</td>
+                    <td><strong style="color: #10b981;">Pinpoint GPS Route Vector</strong></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Emergency Agency Notification</strong></td>
+                    <td><span class="badge badge-red">Delayed 30+ Mins</span> (Critical Golden Hour lost)</td>
+                    <td><span class="badge badge-green">Simultaneous API</span> to Police, Hospital &amp; EMS in 2.4s</td>
+                    <td><strong style="color: #10b981;">95% Faster Golden Hour Triage</strong></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Infrastructure Maintenance &amp; Repair</strong></td>
+                    <td><span class="badge badge-yellow">Major Road Closures</span> for concrete jackhammering &amp; curing</td>
+                    <td><span class="badge badge-green">Modular Snap Replacement</span> of damaged rolling cylinders</td>
+                    <td><strong style="color: #10b981;">80% Faster Highway Re-opening</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Jump Links -->
+        <div style="display: flex; justify-content: center; gap: 16px; margin-top: 24px; flex-wrap: wrap;">
+          <button class="btn btn-secondary btn-sm" id="btnJumpToSensors">📊 VIEW SENSOR DATA</button>
+          <button class="btn btn-secondary btn-sm" id="btnJumpToMap">🗺️ VIEW LIVE MAP</button>
+          <button class="btn btn-secondary btn-sm" id="btnJumpToAlert">🚨 VIEW ALERT PANEL</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 8: EMERGENCY ALERT SYSTEM (ANCHOR)
+         ========================================================================= -->
+    <div id="alertSectionAnchor"></div>
+    <div class="container" style="margin-top: 40px;">
+      <div class="emergency-alert-banner" id="emergencyAlertBanner">
+        <div class="alert-banner-header">
+          <div class="alert-headline-box">
+            <span style="font-size: 28px;">🚨</span>
+            <div>
+              <h3>ACCIDENT DETECTED — EMERGENCY PROTOCOL ACTIVE</h3>
+              <p style="color: #fca5a5; font-size: 13px; margin: 0;">
+                Barrier ID: <strong>RB-023</strong> | Location: <strong>Highway KM 126.4 (Zone 03)</strong> | Severity: <strong>HIGH</strong> | Time: <span id="alertTimestampVal">10:42:18 AM</span>
+              </p>
+            </div>
+          </div>
+          <div class="alert-latency-badge">
+            ⚡ Alert generated in 2.4 seconds <span style="font-size: 10px; opacity: 0.8;">(DEMO SIMULATION)</span>
+          </div>
+        </div>
+
+        <div class="emergency-dispatch-grid">
+          <!-- Police -->
+          <div class="dispatch-card">
+            <div class="dispatch-card-header">
+              <h5>🚓 POLICE ALERT</h5>
+              <span class="dispatch-status-pill">✓ SENT</span>
+            </div>
+            <p class="agency-name">Highway Patrol Post #4 (KM 121)</p>
+            <p>✓ GIS Location & Crash Vector Shared</p>
+            <p>✓ Fast Lane Traffic Diversion Requested</p>
+            <p style="color: #93c5fd; font-weight: bold; margin-top: 6px;">ETA: 4 Minutes</p>
+          </div>
+
+          <!-- Hospital -->
+          <div class="dispatch-card">
+            <div class="dispatch-card-header">
+              <h5>🏥 HOSPITAL ALERT</h5>
+              <span class="dispatch-status-pill">✓ SENT</span>
+            </div>
+            <p class="agency-name">Apex Trauma Center & Hospital</p>
+            <p>✓ Accident Severity Level HIGH Transmitted</p>
+            <p>✓ Emergency Trauma Triage Room Alerted</p>
+            <p style="color: #93c5fd; font-weight: bold; margin-top: 6px;">ETA: 8 Minutes</p>
+          </div>
+
+          <!-- Ambulance -->
+          <div class="dispatch-card">
+            <div class="dispatch-card-header">
+              <h5>🚑 AMBULANCE ALERT</h5>
+              <span class="dispatch-status-pill">✓ DISPATCHED</span>
+            </div>
+            <p class="agency-name">EMS Unit 108-Alpha (Station 3)</p>
+            <p>✓ Turn-by-Turn GPS Navigation Vector Pushed</p>
+            <p>✓ Advanced Life Support Paramedic En Route</p>
+            <p style="color: #93c5fd; font-weight: bold; margin-top: 6px;">ETA: 5 Minutes</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         SECTION 6: LIVE SENSOR DASHBOARD
+         ========================================================================= -->
+    <section class="section" id="sensorDashboardSection">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">REAL-TIME TELEMETRY</span>
+          <h2 class="section-title">LIVE SENSOR DASHBOARD</h2>
+          <p class="section-desc">High-frequency edge sensor streams from Barrier RB-023. Real-time oscilloscopes show nominal baseline and dramatic collision spikes.</p>
+        </div>
+
+        <!-- Telemetry Cards -->
+        <div class="telemetry-cards-grid">
+          <!-- Accelerometer -->
+          <div class="metric-card" id="metricCardAccel">
+            <div class="label">
+              <span>ACCELEROMETER</span>
+              <span class="badge badge-blue">ADXL345</span>
+            </div>
+            <div class="value" id="metricAccelVal">0.98 g</div>
+            <div class="baseline">Nominal baseline: ~0.98g (1g gravity)</div>
+          </div>
+
+          <!-- Load Cell -->
+          <div class="metric-card" id="metricCardForce">
+            <div class="label">
+              <span>LOAD CELL</span>
+              <span class="badge badge-yellow">HX711</span>
+            </div>
+            <div class="value" id="metricForceVal">0.0 kN</div>
+            <div class="baseline">Collision impact force threshold: 15.0 kN</div>
+          </div>
+
+          <!-- Tilt Sensor -->
+          <div class="metric-card" id="metricCardTilt">
+            <div class="label">
+              <span>TILT SENSOR</span>
+              <span class="badge badge-red">MPU6050</span>
+            </div>
+            <div class="value" id="metricTiltVal">2.1°</div>
+            <div class="baseline">Structural deflection baseline: &lt; 3.0°</div>
+          </div>
+
+          <!-- Barrier Status -->
+          <div class="metric-card" id="metricCardStatus">
+            <div class="label">
+              <span>BARRIER HEALTH</span>
+              <span class="badge badge-green">NODE RB-023</span>
+            </div>
+            <div class="value badge-green" id="metricStatusVal" style="font-size: 22px;">HEALTHY</div>
+            <div class="baseline">Calculated via AI sensor fusion</div>
+          </div>
+        </div>
+
+        <!-- Real-Time Waveform Charts -->
+        <div class="charts-grid">
+          <!-- Chart 1: Acceleration -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <h4>Acceleration vs. Time (g)</h4>
+              <span class="badge badge-blue">Peak: 4.8g</span>
+            </div>
+            <div class="chart-canvas-wrapper">
+              <canvas id="chartAccel"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 2: Collision Force -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <h4>Collision Force vs. Time (kN)</h4>
+              <span class="badge badge-yellow">Peak: 38.5 kN</span>
+            </div>
+            <div class="chart-canvas-wrapper">
+              <canvas id="chartForce"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 3: Tilt Angle -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <h4>Tilt Angle vs. Time (Degrees)</h4>
+              <span class="badge badge-red">Deflection: 18°</span>
+            </div>
+            <div class="chart-canvas-wrapper">
+              <canvas id="chartTilt"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 7: LIVE ACCIDENT MAP
+         ========================================================================= -->
+    <section class="section section-alt" id="mapSection">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">GEOGRAPHIC INFORMATION SYSTEM (GIS)</span>
+          <h2 class="section-title">LIVE HIGHWAY CORRIDOR MAP</h2>
+          <p class="section-desc">Interactive geographical mapping along the expressway corridor divided into 10 km LoRa monitoring zones with emergency dispatch points.</p>
+        </div>
+
+        <div class="map-container-wrapper">
+          <div class="map-header-bar">
+            <div class="corridor-zones-legend">
+              <div class="zone-badge-item">
+                <span class="marker-circle" style="background: #3b82f6;"></span>
+                <span>ZONE 01 (KM 100–110)</span>
+              </div>
+              <div class="zone-badge-item">
+                <span class="marker-circle" style="background: #0284c7;"></span>
+                <span>ZONE 02 (KM 110–120)</span>
+              </div>
+              <div class="zone-badge-item">
+                <span class="marker-circle" style="background: #f59e0b;"></span>
+                <span>ZONE 03 (KM 120–130) [FOCUS]</span>
+              </div>
+              <div class="zone-badge-item">
+                <span class="marker-circle" style="background: #10b981;"></span>
+                <span>ZONE 04 (KM 130–140)</span>
+              </div>
+            </div>
+
+            <div style="font-size: 12px; color: #cbd5e1; font-weight: 600;">
+              <span>📡 GATEWAYS EVERY 10 KM</span> • <span style="color: #f87171;">🚨 LIVE GIS LOCK</span>
+            </div>
+          </div>
+
+          <div id="highwayMap"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 9: UNIFIED EMERGENCY COMMAND CENTER
+         ========================================================================= -->
+    <section class="section" id="commandCenterSection">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">CENTRAL HIGHWAY OPERATIONS</span>
+          <h2 class="section-title">UNIFIED EMERGENCY COMMAND CENTER</h2>
+          <p class="section-desc">Government & Highway Authority control room dashboard providing real-time fleet visibility, incident tracking, and barrier asset lifecycle metrics.</p>
+        </div>
+
+        <div class="command-center-container">
+          <!-- KPI Summary Row -->
+          <div class="command-kpi-row">
+            <div class="command-kpi-box alert">
+              <div class="num" id="kpiActiveAccidents">00</div>
+              <div class="lbl">ACTIVE ACCIDENTS</div>
+            </div>
+            <div class="command-kpi-box">
+              <div class="num">120</div>
+              <div class="lbl">MONITORED BARRIERS</div>
+            </div>
+            <div class="command-kpi-box healthy">
+              <div class="num" id="kpiHealthyBarriers">118</div>
+              <div class="lbl">HEALTHY BARRIERS</div>
+            </div>
+            <div class="command-kpi-box">
+              <div class="num" id="kpiDamagedBarriers" style="color: #fbbf24;">02</div>
+              <div class="lbl">DAMAGED BARRIERS</div>
+            </div>
+            <div class="command-kpi-box">
+              <div class="num" id="kpiAlertsSent" style="color: #38bdf8;">00</div>
+              <div class="lbl">ALERTS SENT</div>
+            </div>
+          </div>
+
+          <!-- Recent Alert Log Table -->
+          <h4 style="font-size: 15px; margin-bottom: 12px; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.5px;">
+            Recent Incident Audit Log (Live Relational Stream)
+          </h4>
+          <div class="command-logs-table-wrapper">
+            <table class="command-table">
+              <thead>
+                <tr>
+                  <th>TIME</th>
+                  <th>BARRIER</th>
+                  <th>LOCATION</th>
+                  <th>SEVERITY</th>
+                  <th>DISPATCH STATUS</th>
+                </tr>
+              </thead>
+              <tbody id="commandCenterTableBody">
+                <tr>
+                  <td>10:42:18</td>
+                  <td><strong style="color: #f59e0b;">RB-023</strong></td>
+                  <td>KM 126.4 - Sharp Curve (Zone 03)</td>
+                  <td><span class="badge badge-red">HIGH</span></td>
+                  <td><span style="color: #34d399; font-weight: bold;">✓ ALERT SENT TO POLICE, HOSPITAL, EMS</span></td>
+                </tr>
+                <tr>
+                  <td>08:14:02</td>
+                  <td><strong style="color: #cbd5e1;">RB-004</strong></td>
+                  <td>KM 112.3 - Curve Entry (Zone 02)</td>
+                  <td><span class="badge badge-yellow">LOW</span></td>
+                  <td><span style="color: #94a3b8;">MAINTENANCE INSPECTION QUEUED</span></td>
+                </tr>
+                <tr>
+                  <td>Yesterday</td>
+                  <td><strong style="color: #cbd5e1;">RB-011</strong></td>
+                  <td>KM 119.8 - Southbound (Zone 02)</td>
+                  <td><span class="badge badge-green">NORMAL</span></td>
+                  <td><span style="color: #94a3b8;">SYSTEM HEALTH CHECK OK</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 10: BARRIER NETWORK HEALTH MONITORING
+         ========================================================================= -->
+    <section class="section section-alt" id="monitoringSection">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">INFRASTRUCTURE LIFECYCLE</span>
+          <h2 class="section-title">BARRIER NETWORK HEALTH</h2>
+          <p class="section-desc">Continuous asset intelligence: demonstrates that NEXORA is not just an accident responder, but a proactive smart infrastructure maintenance system.</p>
+        </div>
+
+        <div class="barriers-grid" id="barrierNetworkGrid">
+          <!-- Populated dynamically by main.js -->
+        </div>
+
+        <p style="text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 18px;">
+          💡 <em>Click on any barrier card above to inspect live edge telemetry, solar battery level, and structural maintenance history.</em>
+        </p>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 15: AI / SENSOR FUSION & FALSE-ALARM REJECTION SANDBOX
+         ========================================================================= -->
+    <section class="section" id="aiFusionSection">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">INTELLIGENT EDGE ANALYTICS</span>
+          <h2 class="section-title">INTELLIGENT ACCIDENT VERIFICATION</h2>
+          <p class="section-desc">Practical, engineering-grounded sensor fusion that prevents costly false alarms by correlating triple-sensor signals before triggering sirens.</p>
+        </div>
+
+        <div class="fusion-container">
+          <div class="fusion-grid">
+            <!-- Left: Interactive Sliders & Presets -->
+            <div>
+              <h4 style="margin-bottom: 16px; font-size: 18px;">Sensor Threshold Calibration Sandbox</h4>
+              <p style="font-size: 14px; margin-bottom: 20px;">Adjust values below to observe how the multi-sensor correlation algorithm distinguishes between harmless bumps and severe vehicle crashes.</p>
+
+              <!-- Presets -->
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
+                <button class="btn btn-secondary btn-sm" id="presetSpeedBump">Speed Bump (1.8g)</button>
+                <button class="btn btn-secondary btn-sm" id="presetWindGust">Wind Gust (4.5°)</button>
+                <button class="btn btn-secondary btn-sm" id="presetMinorGraze">Minor Graze (12 kN)</button>
+                <button class="btn btn-primary btn-sm" id="presetMajorCrash">Severe Crash (38.5 kN)</button>
+              </div>
+
+              <!-- Slider 1: Accel -->
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Accelerometer Spike (ADXL345)</span>
+                  <span id="fusionValAccel" style="color: #38bdf8;">0.98 g</span>
+                </div>
+                <input type="range" class="slider-control" id="fusionSliderAccel" min="0.5" max="6.0" step="0.1" value="0.98">
+              </div>
+
+              <!-- Slider 2: Force -->
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Collision Force (Load Cell HX711)</span>
+                  <span id="fusionValForce" style="color: #f59e0b;">0.0 kN</span>
+                </div>
+                <input type="range" class="slider-control" id="fusionSliderForce" min="0" max="60" step="0.5" value="0">
+              </div>
+
+              <!-- Slider 3: Tilt -->
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Tilt Deflection Angle (MPU6050)</span>
+                  <span id="fusionValTilt" style="color: #ef4444;">2.0°</span>
+                </div>
+                <input type="range" class="slider-control" id="fusionSliderTilt" min="0" max="30" step="0.5" value="2.0">
+              </div>
+            </div>
+
+            <!-- Right: Live Evaluation Result -->
+            <div class="fusion-result-panel">
+              <span class="badge badge-blue">AI SENSOR FUSION ENGINE</span>
+              <div class="severity-meter normal" id="fusionSeverityMeter">
+                NORMAL (NO HAZARD)
+              </div>
+              <div id="fusionScoreVal" style="font-weight: 700; color: #64748b; font-size: 13px; margin-bottom: 8px;">
+                Confidence Score: 0/100
+              </div>
+              <p id="fusionDecisionNotes" style="font-size: 14px; font-weight: 600; color: #334155;">
+                Nominal highway operations. No alert transmitted.
+              </p>
+              
+              <div style="margin-top: 20px; padding-top: 16px; border-top: 1px dashed var(--border-color); font-size: 12px; color: var(--text-muted); text-align: left;">
+                <strong>False-Alarm Rejection Matrix:</strong><br>
+                • High vibration + Zero load force ➔ <em>Classified as Pothole / Rumble Strip</em><br>
+                • Deflection &gt; 4° + Zero load force ➔ <em>Classified as Crosswind / Touch</em><br>
+                • High Accel + High Force + Deflection ➔ <strong>Verified Vehicular Collision</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 11: BEFORE vs AFTER COMPARISON
+         ========================================================================= -->
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">PARADIGM SHIFT</span>
+          <h2 class="section-title">BEFORE vs AFTER</h2>
+          <p class="section-desc">Transforming highway safety from reactive manual reporting to proactive autonomous detection.</p>
+        </div>
+
+        <div class="comparison-grid">
+          <div class="comparison-card bad">
+            <span class="badge badge-red card-badge-status">OLD PARADIGM</span>
+            <h3>Traditional Highway System</h3>
+            <div class="step-sub-card-group" style="margin-top: 20px;">
+              <div class="sensor-mini-card"><span>01 Collision</span><span>Rigid barrier crushing stop</span></div>
+              <div class="sensor-mini-card"><span>02 Detection</span><span>No autonomous sensors</span></div>
+              <div class="sensor-mini-card"><span>03 Notification</span><span>Passerby must stop & call 100/108</span></div>
+              <div class="sensor-mini-card"><span>04 Location</span><span>Vague verbal descriptions (delayed)</span></div>
+              <div class="sensor-mini-card"><span>05 Response Time</span><span>25–45 minutes average</span></div>
+            </div>
+          </div>
+
+          <div class="comparison-card good">
+            <span class="badge badge-blue card-badge-status">NEXORA PARADIGM</span>
+            <h3>Smart Rolling Barrier System</h3>
+            <div class="step-sub-card-group" style="margin-top: 20px;">
+              <div class="sensor-mini-card"><span>01 Collision</span><span>Rotational energy conversion & deflection</span></div>
+              <div class="sensor-mini-card"><span>02 Detection</span><span>Edge accelerometer + load cell + tilt</span></div>
+              <div class="sensor-mini-card"><span>03 Notification</span><span>Instant sub-3s API dispatch to Police & EMS</span></div>
+              <div class="sensor-mini-card"><span>04 Location</span><span>Exact GPS & Barrier ID (e.g. RB-023 KM 126.4)</span></div>
+              <div class="sensor-mini-card"><span>05 Response Time</span><span>Immediate dispatch during the Golden Hour</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 12: WHY THIS SYSTEM? (5 STRONG CARDS)
+         ========================================================================= -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">KEY VALUE PROPOSITIONS</span>
+          <h2 class="section-title">WHY THIS SYSTEM?</h2>
+          <p class="section-desc">Designed to address the 5 critical bottlenecks in current highway fatality statistics.</p>
+        </div>
+
+        <div class="reasons-grid">
+          <div class="reason-card">
+            <div class="card-num">01</div>
+            <h4>REDUCED IMPACT</h4>
+            <p>Rotational cylinder movement helps dissipate catastrophic collision momentum into controlled angular kinetic energy.</p>
+          </div>
+
+          <div class="reason-card">
+            <div class="card-num">02</div>
+            <h4>INSTANT DETECTION</h4>
+            <p>Tri-axial accelerometer and load sensors automatically recognize collision signatures within milliseconds.</p>
+          </div>
+
+          <div class="reason-card">
+            <div class="card-num">03</div>
+            <h4>LOCATION AWARENESS</h4>
+            <p>GPS and hardcoded Barrier IDs eliminate ambiguity, pinpointing the accident zone down to the exact meter.</p>
+          </div>
+
+          <div class="reason-card">
+            <div class="card-num">04</div>
+            <h4>FASTER RESPONSE</h4>
+            <p>Police patrol, emergency trauma hospitals, and ambulance units receive automated dispatch alerts simultaneously.</p>
+          </div>
+
+          <div class="reason-card">
+            <div class="card-num">05</div>
+            <h4>SMART INFRASTRUCTURE</h4>
+            <p>Passive road dividers transform into an intelligent, connected edge computing network for national smart highways.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 13: TECHNOLOGY ARCHITECTURE
+         ========================================================================= -->
+    <section class="section section-dark" id="technologySection">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag yellow">SYSTEM SPECIFICATION</span>
+          <h2 class="section-title">TECHNOLOGY ARCHITECTURE</h2>
+          <p class="section-desc">Strictly aligned with modern embedded edge computing and web engineering standards.</p>
+        </div>
+
+        <div class="tech-flow-diagram">
+          <div class="diagram-row">
+            <div class="diagram-node yellow-highlight">
+              <h5>ROLLING BARRIER</h5>
+              <span>Accelerometer (ADXL345)<br>Load Cell (HX711)<br>Tilt Sensor (MPU6050)</span>
+            </div>
+            <div class="diagram-connector">➔</div>
+            <div class="diagram-node">
+              <h5>EDGE CONTROLLER</h5>
+              <span>ESP32 Microcontroller<br>Low-Power SPI / I2C Bus</span>
+            </div>
+            <div class="diagram-connector">➔</div>
+            <div class="diagram-node">
+              <h5>LONG RANGE RF</h5>
+              <span>LoRa Transceiver<br>868 MHz / 433 MHz</span>
+            </div>
+            <div class="diagram-connector">➔</div>
+            <div class="diagram-node highlight">
+              <h5>IoT GATEWAY</h5>
+              <span>Raspberry Pi (Every 10km)<br>Solar + 4G/Fiber Backhaul</span>
+            </div>
+          </div>
+
+          <div style="text-align: center; margin: 20px 0; color: #64748b; font-size: 24px;">⬇</div>
+
+          <div class="diagram-row">
+            <div class="diagram-node highlight">
+              <h5>NODE.JS BACKEND</h5>
+              <span>Express.js REST APIs<br>Sensor Fusion Triangulation</span>
+            </div>
+            <div class="diagram-connector">➔</div>
+            <div class="diagram-node">
+              <h5>DATABASE LAYER</h5>
+              <span>MySQL Relational DB<br>Time-Series Sensor Logs</span>
+            </div>
+            <div class="diagram-connector">➔</div>
+            <div class="diagram-node">
+              <h5>DISPATCH ENGINES</h5>
+              <span>Location Mapping<br>Severity Classification</span>
+            </div>
+            <div class="diagram-connector">➔</div>
+            <div class="diagram-node yellow-highlight">
+              <h5>RESPONSE STATIONS</h5>
+              <span>Police • Hospital<br>Ambulance • Command Room</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tech Stack Badges -->
+        <div style="display: flex; justify-content: center; gap: 16px; margin-top: 30px; flex-wrap: wrap;">
+          <span class="badge badge-blue">Frontend: HTML5 + CSS3 + JavaScript (ES6)</span>
+          <span class="badge badge-blue">Backend: Node.js + Express</span>
+          <span class="badge badge-blue">Database: MySQL (schema.sql)</span>
+          <span class="badge badge-yellow">IoT Edge: Raspberry Pi + LoRa + ESP32</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 14: DATABASE / DATA FLOW
+         ========================================================================= -->
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">DATA SCHEMA SPECIFICATION</span>
+          <h2 class="section-title">DATABASE & DATA FLOW</h2>
+          <p class="section-desc">Relational MySQL schema architecture modeling the end-to-end highway safety network.</p>
+        </div>
+
+        <div class="db-tables-grid">
+          <!-- Table 1: Barriers -->
+          <div class="db-card">
+            <div class="db-card-header">
+              <span>TABLE: BARRIERS</span>
+              <span>10 Fields</span>
+            </div>
+            <div class="db-card-body">
+              <ul class="db-fields-list">
+                <li>barrier_id (PK)</li>
+                <li>location</li>
+                <li>zone</li>
+                <li>status</li>
+                <li>latitude</li>
+                <li>longitude</li>
+                <li>gateway_id</li>
+                <li>last_inspection</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Table 2: Sensor Readings -->
+          <div class="db-card">
+            <div class="db-card-header">
+              <span>SENSOR_READINGS</span>
+              <span>7 Fields</span>
+            </div>
+            <div class="db-card-body">
+              <ul class="db-fields-list">
+                <li>reading_id (PK)</li>
+                <li>sensor_id</li>
+                <li>barrier_id (FK)</li>
+                <li>acceleration (g)</li>
+                <li>force (kN)</li>
+                <li>tilt (degrees)</li>
+                <li>timestamp</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Table 3: Accidents -->
+          <div class="db-card">
+            <div class="db-card-header">
+              <span>TABLE: ACCIDENTS</span>
+              <span>9 Fields</span>
+            </div>
+            <div class="db-card-body">
+              <ul class="db-fields-list">
+                <li>accident_id (PK)</li>
+                <li>barrier_id (FK)</li>
+                <li>location</li>
+                <li>zone</li>
+                <li>severity</li>
+                <li>impact_force</li>
+                <li>response_status</li>
+                <li>timestamp</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Table 4: Emergency Alerts -->
+          <div class="db-card">
+            <div class="db-card-header">
+              <span>EMERGENCY_ALERTS</span>
+              <span>9 Fields</span>
+            </div>
+            <div class="db-card-body">
+              <ul class="db-fields-list">
+                <li>alert_id (PK)</li>
+                <li>accident_id (FK)</li>
+                <li>police_status</li>
+                <li>hospital_status</li>
+                <li>ambulance_status</li>
+                <li>response_latency_sec</li>
+                <li>created_at</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 23: CALL TO ACTION / FINAL SECTION
+         ========================================================================= -->
+    <section class="cta-final-section">
+      <div class="container">
+        <h2>WHAT IF A ROAD BARRIER COULD DO MORE THAN STOP A VEHICLE?</h2>
+        <p class="sub">“WHAT IF IT COULD ABSORB IMPACT, DETECT THE CRASH, IDENTIFY THE LOCATION, AND CALL FOR HELP?”</p>
+        <p style="color: #93c5fd; font-size: 16px; margin-bottom: 32px; font-weight: 600;">
+          NEXORA transforms passive road barriers into intelligent safety infrastructure.
+        </p>
+
+        <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+          <a href="#simulationSection" class="btn btn-jury btn-lg">LAUNCH LIVE DEMO</a>
+          <a href="#technologySection" class="btn btn-secondary btn-lg">VIEW SYSTEM ARCHITECTURE</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================================================================
+       SECTION 24: FOOTER
+       ========================================================================= -->
+  <footer class="site-footer" id="aboutSection">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>NEXORA</h4>
+          <p style="color: #cbd5e1; margin-bottom: 12px;">AIoT Smart Rolling Barrier & Accident Response System</p>
+          <p style="font-size: 13px; color: #94a3b8;">
+            “Smarter Barriers. Faster Response. Safer Highways.”
+          </p>
+          <div style="margin-top: 14px;">
+            <span class="badge badge-yellow">SIH INNOVATION PROTOTYPE</span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h5>Navigation</h5>
+          <ul>
+            <li><a href="#heroSection">Home</a></li>
+            <li><a href="#problemSection">The Problem</a></li>
+            <li><a href="#solutionSection">How It Works</a></li>
+            <li><a href="#simulationSection">Simulation Demo</a></li>
+            <li><a href="#mapSection">Corridor GIS Map</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Core Tech</h5>
+          <ul>
+            <li><a href="#technologySection">HTML5 + CSS3 + JS</a></li>
+            <li><a href="#technologySection">Node.js Express Backend</a></li>
+            <li><a href="#technologySection">MySQL Relational DB</a></li>
+            <li><a href="#technologySection">Raspberry Pi + LoRa</a></li>
+            <li><a href="#aiFusionSection">Sensor Fusion Logic</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Project & Contact</h5>
+          <ul>
+            <li><a href="#">Team Nexora (SIH)</a></li>
+            <li><a href="#">GitHub Repository</a></li>
+            <li><a href="#">Engineering Pitch Deck</a></li>
+            <li><a href="#">NHAI Safety Compliance</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 NEXORA System. Built for Smart India Hackathon. All simulated data clearly designated.</div>
+        <div style="display: flex; gap: 16px;">
+          <span style="color: #64748b;">Simulated Alert Prototype</span>
+          <span style="color: #64748b;">Zero External Hardware Dependency Required</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+       MODALS: BARRIER NETWORK DETAILS INSPECTOR
+       ========================================================================= -->
+  <div class="modal-overlay" id="barrierDetailsModal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>BARRIER TELEMETRY INSPECTOR: <span id="modalBarrierId" style="color: #f59e0b;">RB-023</span></h3>
+        <button class="modal-close-btn" id="btnModalClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-specs-grid">
+          <div class="spec-item">
+            <div class="lbl">Highway Location</div>
+            <div class="val" id="modalBarrierLocation">KM 126.4</div>
+          </div>
+          <div class="spec-item">
+            <div class="lbl">Monitoring Zone</div>
+            <div class="val" id="modalBarrierZone">Zone 03 (KM 120-130)</div>
+          </div>
+          <div class="spec-item">
+            <div class="lbl">Operational Status</div>
+            <div class="val" id="modalBarrierStatus">HEALTHY</div>
+          </div>
+          <div class="spec-item">
+            <div class="lbl">Precise GPS Vector</div>
+            <div class="val" id="modalBarrierGPS">18.7684° N, 73.4328° E</div>
+          </div>
+          <div class="spec-item">
+            <div class="lbl">Connected Gateway</div>
+            <div class="val" id="modalBarrierGateway">GW-03 (LoRaWAN)</div>
+          </div>
+          <div class="spec-item">
+            <div class="lbl">Solar Battery Reserve</div>
+            <div class="val" id="modalBarrierBattery">96%</div>
+          </div>
+          <div class="spec-item">
+            <div class="lbl">Last Physical Inspection</div>
+            <div class="val" id="modalBarrierInspection">2026-09-15</div>
+          </div>
+          <div class="spec-item">
+            <div class="lbl">Crash History</div>
+            <div class="val" id="modalBarrierHistory">0 Events Logged</div>
+          </div>
+        </div>
+
+        <h5 style="margin-bottom: 10px; font-size: 13px; text-transform: uppercase; color: #64748b;">Live Edge Sensor Telemetry</h5>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+          <div style="background: #f1f5f9; padding: 10px; border-radius: 6px; text-align: center;">
+            <div style="font-size: 11px; color: #64748b;">ACCELEROMETER</div>
+            <div style="font-size: 16px; font-weight: bold; color: #1d4ed8;" id="modalSensorAccel">0.98 g</div>
+          </div>
+          <div style="background: #f1f5f9; padding: 10px; border-radius: 6px; text-align: center;">
+            <div style="font-size: 11px; color: #64748b;">LOAD CELL</div>
+            <div style="font-size: 16px; font-weight: bold; color: #b45309;" id="modalSensorForce">0.0 kN</div>
+          </div>
+          <div style="background: #f1f5f9; padding: 10px; border-radius: 6px; text-align: center;">
+            <div style="font-size: 11px; color: #64748b;">TILT SENSOR</div>
+            <div style="font-size: 16px; font-weight: bold; color: #dc2626;" id="modalSensorTilt">2.1°</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       SECTION 16: JURY DEMO MODE GUIDED OVERLAY
+       ========================================================================= -->
+  <div class="jury-tour-overlay" id="juryTourOverlay">
+    <div class="jury-progress-bar-bg">
+      <div class="jury-progress-bar-fill" id="juryTourProgressBar"></div>
+    </div>
+    <div class="jury-tour-header">
+      <h4 id="juryTourTitle">⚡ Jury Demo Mode</h4>
+      <button style="background:transparent; border:none; color:#94a3b8; font-size:18px; cursor:pointer;" id="btnJuryTourClose">&times;</button>
+    </div>
+    <div class="jury-tour-body">
+      <p id="juryTourText">Welcome to the NEXORA SIH Jury Walkthrough. Initializing guided sequence...</p>
+    </div>
+    <div class="jury-tour-footer">
+      <span style="font-size: 11px; color: #94a3b8;">60-90s Guided Demo</span>
+      <button class="btn btn-jury btn-sm" id="btnJuryTourNext">Next Step →</button>
+    </div>
+  </div>
+
+  <!-- Leaflet GIS Map Library -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- Application Logic Modules -->
+  <script src="js/api.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/simulation.js"></script>
+  <script src="js/sensor-fusion.js"></script>
+  <script src="js/jury-mode.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
