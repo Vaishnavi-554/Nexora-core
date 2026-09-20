@@ -152,11 +152,6 @@ const SimulationEngine = {
 
     this.renderStepTrackers();
     this.resetSimulation();
-
-    // Scroll scoreboard into clear view if user clicked tab
-    if (shouldScroll && newMode === 'dual' && scoreboard) {
-      scoreboard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
   },
 
   renderStepTrackers() {
@@ -624,19 +619,35 @@ const SimulationEngine = {
       resNex.className = 'sim-track-result-badge';
     }
 
-    // Both cars drive forward simultaneously at identical velocity
-    const hitX = 430;
+    // Measure target cylinder coordinate dynamically relative to dualTrackNex
+    const targetDualCyl = document.getElementById('barrierTargetDual') || document.querySelector('#dualTrackNex .barrier-cylinder.target');
+    const trackNex = document.getElementById('dualTrackNex');
+    let hitX = 220;
+    let barrierTop = 215;
+    if (targetDualCyl && trackNex) {
+      const trackRect = trackNex.getBoundingClientRect();
+      const cylRect = targetDualCyl.getBoundingClientRect();
+      hitX = Math.round(cylRect.left - trackRect.left + (cylRect.width / 2));
+      barrierTop = Math.round(cylRect.top - trackRect.top);
+    }
+
+    const vWidth = 80;
+    const vHeight = 38;
+    const contactLeft = hitX - 58;
+    const contactTop = barrierTop - vHeight;
+
+    // Both cars drive forward simultaneously at identical velocity (1.05s)
     if (vTrad) {
       vTrad.style.transition = 'left 1.05s cubic-bezier(0.25, 1, 0.5, 1), top 1.05s ease-in, transform 1.05s ease-out';
-      vTrad.style.left = `${hitX - 70}px`;
-      vTrad.style.top = '102px';
-      vTrad.style.transform = 'rotate(18deg)';
+      vTrad.style.left = `${contactLeft}px`;
+      vTrad.style.top = `${contactTop}px`;
+      vTrad.style.transform = 'rotate(14deg)';
     }
     if (vNex) {
       vNex.style.transition = 'left 1.05s cubic-bezier(0.25, 1, 0.5, 1), top 1.05s ease-in, transform 1.05s ease-out';
-      vNex.style.left = `${hitX - 70}px`;
-      vNex.style.top = '102px';
-      vNex.style.transform = 'rotate(11deg)';
+      vNex.style.left = `${contactLeft}px`;
+      vNex.style.top = `${contactTop}px`;
+      vNex.style.transform = 'rotate(14deg)';
     }
 
     await new Promise(r => setTimeout(r, 1050));
@@ -646,12 +657,20 @@ const SimulationEngine = {
     this.playAudioTone('heavy_crash');
 
     // 1. TRACK 1 (TRADITIONAL RIGID CONCRETE): Fatal sudden dead stop, violent crumple, 142.5 kN / 18.4g trauma, NO SENSORS!
-    if (burstTrad) burstTrad.classList.add('active');
-    if (crackMark) crackMark.classList.add('active');
+    if (burstTrad) {
+      burstTrad.style.left = `${hitX - 10}px`;
+      burstTrad.style.top = `${barrierTop}px`;
+      burstTrad.classList.add('active');
+    }
+    if (crackMark) {
+      crackMark.style.left = `${hitX - 18}px`;
+      crackMark.style.top = `${barrierTop}px`;
+      crackMark.classList.add('active');
+    }
     if (vTrad) {
       vTrad.classList.add('crumpled');
       vTrad.style.transition = 'none';
-      vTrad.style.transform = 'rotate(26deg)';
+      vTrad.style.transform = 'rotate(22deg)';
     }
     if (speedTrad) {
       speedTrad.textContent = '0 km/h (FATAL STOP)';
@@ -663,7 +682,11 @@ const SimulationEngine = {
     }
 
     // 2. TRACK 2 (NEXORA SMART ROLLING BARRIER): Absorbs kinetic energy, cylinders rotate vigorously, smooth deflection!
-    if (burstNex) burstNex.classList.add('active');
+    if (burstNex) {
+      burstNex.style.left = `${hitX - 10}px`;
+      burstNex.style.top = `${barrierTop}px`;
+      burstNex.classList.add('active');
+    }
     cylinders.forEach(cyl => cyl.classList.add('rotating'));
     if (dualEnergyBadge) dualEnergyBadge.classList.add('active');
     if (speedNex) {
@@ -675,12 +698,12 @@ const SimulationEngine = {
       resNex.className = 'sim-track-result-badge success';
     }
 
-    // Vehicle 2 rides smoothly along the outer roller contour (no penetration)
+    // Vehicle 2 rides smoothly along the outer roller contour (zero barrier penetration)
     if (vNex) {
       vNex.style.transition = 'left 0.8s cubic-bezier(0.12, 0.8, 0.28, 1), top 0.8s ease-out, transform 0.8s ease-out';
-      vNex.style.left = `${hitX + 30}px`;
-      vNex.style.top = '100px';
-      vNex.style.transform = 'rotate(3deg)';
+      vNex.style.left = `${hitX + 32}px`;
+      vNex.style.top = `${contactTop - 2}px`;
+      vNex.style.transform = 'rotate(4deg)';
     }
 
     // Step 3 & 4: Energy dissipation in action
@@ -692,8 +715,8 @@ const SimulationEngine = {
     if (speedNex) speedNex.textContent = '16 km/h ↓ (Slowing)';
     if (vNex) {
       vNex.style.transition = 'left 0.85s cubic-bezier(0.15, 0.9, 0.35, 1), top 0.85s ease-out, transform 0.85s ease-out';
-      vNex.style.left = `${hitX + 90}px`;
-      vNex.style.top = '98px';
+      vNex.style.left = `${hitX + 92}px`;
+      vNex.style.top = `${contactTop - 3}px`;
       vNex.style.transform = 'rotate(0deg)';
     }
 
@@ -741,11 +764,11 @@ const SimulationEngine = {
     if (dualPacket) {
       dualPacket.style.display = 'block';
       dualPacket.style.left = `${hitX}px`;
-      dualPacket.style.top = '120px';
+      dualPacket.style.top = `${barrierTop}px`;
       dualPacket.style.transition = 'left 0.7s ease-in-out, top 0.7s ease-in-out';
       await new Promise(r => setTimeout(r, 50));
-      dualPacket.style.left = 'calc(100% - 40px)';
-      dualPacket.style.top = '48px';
+      dualPacket.style.left = 'calc(100% - 38px)';
+      dualPacket.style.top = '54px';
     }
 
     await new Promise(r => setTimeout(r, 700));
@@ -885,15 +908,15 @@ const SimulationEngine = {
     if (vTrad) {
       vTrad.classList.remove('crumpled');
       vTrad.style.transition = 'none';
-      vTrad.style.left = '-120px';
-      vTrad.style.top = '60px';
+      vTrad.style.left = '-100px';
+      vTrad.style.top = '90px';
       vTrad.style.transform = 'rotate(0deg)';
     }
     if (vNex) {
       vNex.classList.remove('crumpled');
       vNex.style.transition = 'none';
-      vNex.style.left = '-120px';
-      vNex.style.top = '60px';
+      vNex.style.left = '-100px';
+      vNex.style.top = '90px';
       vNex.style.transform = 'rotate(0deg)';
     }
     if (speedTrad) {
@@ -1036,11 +1059,6 @@ const SimulationEngine = {
         </div>
       </div>
     `;
-
-    const alertSection = document.getElementById('alertSectionAnchor');
-    if (alertSection) {
-      alertSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
   },
 
   updateCommandCenterUI(simData) {

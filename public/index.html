@@ -68,7 +68,7 @@
           <div class="hero-cta-group">
             <a href="#simulationSection" class="btn btn-primary btn-lg">LAUNCH LIVE DEMO</a>
             <a href="#solutionSection" class="btn btn-secondary btn-lg">EXPLORE THE SYSTEM</a>
-            <button class="btn btn-jury btn-lg" id="btnHeroJuryDemo">JURY DEMO MODE (90s)</button>
+            <button class="btn btn-jury btn-lg" id="btnHeroJuryDemo">⚡ JURY DEMO MODE (INSTANT CRASH COMPARISON)</button>
           </div>
 
           <!-- Visual Flow Diagram -->
@@ -270,6 +270,8 @@
               <div class="roller-model spinning"></div>
               <div class="roller-model spinning"></div>
               <div class="roller-model spinning"></div>
+              <div class="roller-model spinning"></div>
+              <div class="roller-model spinning"></div>
             </div>
             <div style="font-size: 11px; text-align: center; color: #f59e0b; font-weight: bold;">
               Impact Energy ➔ Rotational Energy
@@ -421,9 +423,14 @@
               <div class="sim-road-lane"></div>
             </div>
 
-            <!-- NEXORA Rolling Barrier Line (Single View) -->
-            <div class="sim-barrier-line" id="simBarrierLineNexora" style="display: none;">
+            <!-- NEXORA Rolling Barrier Line (Single View - Tightly Spaced Continuous Guardrail) -->
+            <div class="sim-barrier-line" id="simBarrierLineNexora" style="display: none; top: 215px; left: 0; right: 0; width: 100%;">
               <div class="barrier-rail"></div>
+              <div class="barrier-terminal-post start"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
               <div class="barrier-cylinder"></div>
               <div class="barrier-cylinder"></div>
               <div class="barrier-cylinder"></div>
@@ -433,17 +440,39 @@
               <div class="barrier-cylinder"></div>
               <div class="barrier-cylinder"></div>
               <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-cylinder"></div>
+              <div class="barrier-terminal-post end"></div>
             </div>
 
             <!-- TRADITIONAL RIGID CONCRETE DIVIDER (Single View) -->
             <div class="sim-barrier-traditional" id="simBarrierLineTrad">
-              <div class="sim-concrete-barrier">
+              <div class="sim-concrete-barrier" style="left: 0; right: 0; width: 100%;">
+                <div class="concrete-terminal-cap start"></div>
                 <div class="concrete-segment"></div>
                 <div class="concrete-segment"></div>
                 <div class="concrete-segment"></div>
                 <div class="concrete-segment"></div>
                 <div class="concrete-segment"></div>
                 <div class="concrete-segment"></div>
+                <div class="concrete-segment"></div>
+                <div class="concrete-segment"></div>
+                <div class="concrete-segment"></div>
+                <div class="concrete-segment"></div>
+                <div class="concrete-terminal-cap end"></div>
               </div>
               <div class="sim-concrete-label">UNMONITORED RIGID CONCRETE DIVIDER (NO SENSORS)</div>
               <div class="concrete-crack-mark" id="concreteCrackMark"></div>
@@ -456,78 +485,108 @@
               <div class="sim-vehicle-light bottom"></div>
             </div>
 
-            <!-- DUAL SYNCHRONIZED COMPARISON VIEW TRACKS (ACTIVE DEFAULT) -->
+            <!-- DUAL SYNCHRONIZED COMPARISON VIEW TRACKS (SIDE-BY-SIDE ON DESKTOP, ACTIVE DEFAULT) -->
             <div class="sim-dual-container active" id="simDualContainer">
-              <!-- Upper Track: Traditional Rigid Barrier -->
+              <!-- Left Track: Traditional Rigid Barrier -->
               <div class="sim-track-lane" id="dualTrackTrad">
-                <div class="sim-track-header-tag trad">
-                  <span>🧱 TRACK 1: TRADITIONAL RIGID CONCRETE DIVIDER</span>
+                <div class="sim-track-topbar">
+                  <div class="sim-track-header-tag trad">
+                    <span>🧱 TRACK 1: TRADITIONAL RIGID CONCRETE</span>
+                  </div>
+                  <div class="sim-track-result-badge" id="dualResultBadgeTrad">
+                    WAITING FOR SIMULATION
+                  </div>
                 </div>
-                <div class="sim-track-result-badge" id="dualResultBadgeTrad">
-                  WAITING FOR SIMULATION
+                <div class="sim-road" style="top: 42px; height: 275px;">
+                  <div class="sim-road-shoulder" style="top: 8px;"></div>
+                  <div class="sim-road-lane" style="top: 48%;"></div>
                 </div>
-                <div class="sim-road" style="top: 30px; height: 190px;">
-                  <div class="sim-road-lane" style="top: 45%;"></div>
-                </div>
-                <!-- Concrete Divider in Dual View -->
-                <div class="sim-concrete-barrier" style="position: absolute; top: 145px; left: 30px; right: 30px; height: 42px; z-index: 25;">
+                <!-- Concrete Divider in Dual View (Edge-to-Edge with Terminal Caps) -->
+                <div class="sim-concrete-barrier" style="position: absolute; top: 215px; left: 0; right: 0; width: 100%; height: 46px; z-index: 25;">
+                  <div class="concrete-terminal-cap start"></div>
                   <div class="concrete-segment"></div>
                   <div class="concrete-segment"></div>
                   <div class="concrete-segment"></div>
                   <div class="concrete-segment"></div>
+                  <div class="concrete-segment"></div>
+                  <div class="concrete-segment"></div>
+                  <div class="concrete-segment"></div>
+                  <div class="concrete-segment"></div>
+                  <div class="concrete-segment"></div>
+                  <div class="concrete-segment"></div>
+                  <div class="concrete-terminal-cap end"></div>
                 </div>
                 <!-- Vehicle 1 -->
-                <div class="sim-vehicle" id="simVehicleDualTrad" style="top: 60px; left: -120px; z-index: 20;">
+                <div class="sim-vehicle" id="simVehicleDualTrad" style="top: 90px; left: -100px; width: 80px; height: 38px; z-index: 20;">
                   <div class="sim-vehicle-speed-tag" id="simSpeedTagDualTrad">82 km/h</div>
                   <div class="sim-vehicle-light top"></div>
                   <div class="sim-vehicle-light bottom"></div>
                 </div>
                 <!-- Dual Crack -->
-                <div class="concrete-crack-mark" id="dualCrackMark" style="top: 145px; left: 450px;"></div>
+                <div class="concrete-crack-mark" id="dualCrackMark" style="top: 215px; left: 220px;"></div>
                 <!-- Dual Burst 1 -->
-                <div class="collision-burst" id="dualBurstTrad" style="top: 145px; left: 440px;"></div>
+                <div class="collision-burst" id="dualBurstTrad" style="top: 215px; left: 220px;"></div>
               </div>
 
-              <!-- Lower Track: NEXORA Smart Rolling Barrier -->
+              <!-- Right Track: NEXORA Smart Rolling Barrier -->
               <div class="sim-track-lane" id="dualTrackNex">
-                <div class="sim-track-header-tag nex">
-                  <span>🟡 TRACK 2: NEXORA AIoT SMART ROLLING BARRIER (OUR SOLUTION)</span>
+                <div class="sim-track-topbar">
+                  <div class="sim-track-header-tag nex">
+                    <span>🟡 TRACK 2: NEXORA SMART ROLLING BARRIER</span>
+                  </div>
+                  <div class="sim-track-result-badge" id="dualResultBadgeNex">
+                    WAITING FOR SIMULATION
+                  </div>
                 </div>
-                <div class="sim-track-result-badge" id="dualResultBadgeNex">
-                  WAITING FOR SIMULATION
-                </div>
-                <div class="sim-road" style="top: 30px; height: 190px;">
-                  <div class="sim-road-lane" style="top: 45%;"></div>
+                <div class="sim-road" style="top: 42px; height: 275px;">
+                  <div class="sim-road-shoulder" style="top: 8px;"></div>
+                  <div class="sim-road-lane" style="top: 48%;"></div>
                 </div>
                 <!-- Dual Energy Conversion Visual Indicator -->
-                <div class="energy-conversion-badge" id="dualEnergyBadge" style="top: 8px; font-size: 11px; padding: 4px 12px; z-index: 32;">
+                <div class="energy-conversion-badge" id="dualEnergyBadge" style="top: 44px; left: 50%; transform: translateX(-50%); font-size: 10px; padding: 3px 10px; z-index: 32;">
                   <span>🔄 ROTATIONAL ENERGY CONVERSION (CYLINDERS DISSIPATING IMPACT)</span>
                 </div>
                 <!-- 10km LoRa Gateway Tower in Dual View -->
-                <div class="sim-gateway-tower" id="dualGatewayTower" style="top: 36px; right: 25px; z-index: 28;">
+                <div class="sim-gateway-tower" id="dualGatewayTower" style="top: 42px; right: 14px; z-index: 28;">
                   <div class="gateway-antenna">📡</div>
                   <div class="gateway-label">GATEWAY 03<br>(10 KM LORA)</div>
                 </div>
                 <!-- Flying LoRa Telemetry Packet (Dual Track) -->
                 <div class="lora-packet-node" id="dualLoraPacket" style="display: none; z-index: 29;"></div>
-                <!-- Rolling Barrier in Dual View -->
-                <div class="sim-barrier-line" style="top: 145px; left: 30px; right: 30px; height: 44px; z-index: 25;">
+                <!-- Rolling Barrier in Dual View (Edge-to-Edge with Terminal Posts & Continuous Cylinders) -->
+                <div class="sim-barrier-line" style="top: 215px; left: 0; right: 0; width: 100%; height: 48px; z-index: 25;">
                   <div class="barrier-rail"></div>
+                  <div class="barrier-terminal-post start"></div>
                   <div class="barrier-cylinder dual-cyl"></div>
                   <div class="barrier-cylinder dual-cyl"></div>
                   <div class="barrier-cylinder dual-cyl"></div>
-                  <div class="barrier-cylinder dual-cyl target"></div>
                   <div class="barrier-cylinder dual-cyl"></div>
                   <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl target" id="barrierTargetDual"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-cylinder dual-cyl"></div>
+                  <div class="barrier-terminal-post end"></div>
                 </div>
                 <!-- Vehicle 2 -->
-                <div class="sim-vehicle" id="simVehicleDualNex" style="top: 60px; left: -120px; z-index: 20;">
+                <div class="sim-vehicle" id="simVehicleDualNex" style="top: 90px; left: -100px; width: 80px; height: 38px; z-index: 20;">
                   <div class="sim-vehicle-speed-tag" id="simSpeedTagDualNex">82 km/h</div>
                   <div class="sim-vehicle-light top"></div>
                   <div class="sim-vehicle-light bottom"></div>
                 </div>
                 <!-- Dual Burst 2 -->
-                <div class="collision-burst" id="dualBurstNex" style="top: 145px; left: 440px;"></div>
+                <div class="collision-burst" id="dualBurstNex" style="top: 215px; left: 220px;"></div>
               </div>
             </div>
 

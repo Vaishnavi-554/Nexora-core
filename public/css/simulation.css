@@ -115,14 +115,19 @@
 /* Rolling Barrier Section on Median / Shoulder */
 .sim-barrier-line {
   position: absolute;
-  top: 205px;
-  left: 40px;
-  right: 40px;
-  height: 52px;
+  top: 215px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 48px;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
+  gap: 3px;
+  padding: 0 4px;
   z-index: 25;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .barrier-rail {
@@ -138,10 +143,75 @@
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
 }
 
-/* Individual Rolling Cylinders */
+/* Steel Highway Terminal Anchor Posts for Barrier Corners */
+.barrier-terminal-post {
+  width: 18px;
+  height: 46px;
+  background: linear-gradient(180deg, #f1f5f9 0%, #94a3b8 40%, #475569 80%, #1e293b 100%);
+  border: 2px solid #0f172a;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.7);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 27;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  box-sizing: border-box;
+}
+
+.barrier-terminal-post::before {
+  content: '';
+  width: 10px;
+  height: 6px;
+  background: #f59e0b;
+  border-radius: 2px;
+  box-shadow: 0 0 4px rgba(245, 158, 11, 0.8);
+}
+
+.barrier-terminal-post::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  background: #ef4444;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #ef4444;
+}
+
+/* Concrete Divider Terminal Cap */
+.concrete-terminal-cap {
+  width: 18px;
+  height: 100%;
+  background: linear-gradient(180deg, #94a3b8 0%, #475569 60%, #1e293b 100%);
+  border-right: 2px solid #0f172a;
+  border-left: 2px solid #0f172a;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.concrete-terminal-cap::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: #ef4444;
+  border-radius: 2px;
+  box-shadow: 0 0 6px #ef4444;
+}
+
+/* Individual Rolling Cylinders - Tightly Spaced Continuous Guardrail */
 .barrier-cylinder {
-  width: 40px;
-  height: 50px;
+  width: 34px;
+  height: 48px;
+  flex-shrink: 1;
+  min-width: 16px;
+  max-width: 38px;
+  margin: 0 1px;
   background: repeating-linear-gradient(
     45deg,
     #f59e0b,
@@ -149,7 +219,7 @@
     #0f172a 9px,
     #0f172a 18px
   );
-  border-radius: 8px;
+  border-radius: 7px;
   border: 2px solid #000;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.4);
   z-index: 26;
@@ -157,8 +227,19 @@
   position: relative;
 }
 
+.barrier-cylinder.dual-cyl {
+  width: 26px;
+  height: 42px;
+  border-radius: 6px;
+  flex-shrink: 1;
+  min-width: 12px;
+  max-width: 30px;
+  margin: 0 1px;
+}
+
 .barrier-cylinder.target {
   box-shadow: 0 0 16px rgba(245, 158, 11, 0.9), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+  border-color: #fbbf24;
 }
 
 .barrier-cylinder.target::after {
@@ -608,15 +689,15 @@
 }
 
 /* ==========================================================================
-   DUAL SPLIT SYNCHRONIZED TRACK VIEW
+   DUAL SPLIT SYNCHRONIZED TRACK VIEW (SIDE-BY-SIDE LANES)
    ========================================================================== */
 .sim-viewport.dual-view {
-  height: 520px;
+  height: 380px;
 }
 
 .sim-dual-container {
   display: none;
-  flex-direction: column;
+  flex-direction: row;
   height: 100%;
   width: 100%;
 }
@@ -626,29 +707,48 @@
 }
 
 .sim-track-lane {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
   position: relative;
   overflow: hidden;
-  border-bottom: 2px dashed #475569;
-}
-
-.sim-track-lane:last-child {
+  height: 100%;
   border-bottom: none;
 }
 
-.sim-track-header-tag {
+#dualTrackTrad {
+  border-right: 3px solid #334155;
+  box-shadow: inset -5px 0 14px rgba(0, 0, 0, 0.45);
+}
+
+#dualTrackNex {
+  box-shadow: inset 5px 0 14px rgba(0, 0, 0, 0.45);
+}
+
+.sim-track-topbar {
   position: absolute;
   top: 10px;
-  left: 14px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
   z-index: 30;
-  font-size: 11px;
+  pointer-events: none;
+}
+
+.sim-track-header-tag {
+  font-size: 10.5px;
   font-weight: 800;
-  padding: 3px 10px;
+  padding: 4px 9px;
   border-radius: 4px;
   display: flex;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
 }
 
 .sim-track-header-tag.trad {
@@ -664,27 +764,31 @@
 }
 
 .sim-track-result-badge {
-  position: absolute;
-  top: 10px;
-  right: 14px;
-  z-index: 30;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
-  padding: 4px 10px;
+  padding: 4px 9px;
   border-radius: 4px;
-  background: rgba(15, 23, 42, 0.9);
+  background: rgba(15, 23, 42, 0.92);
   border: 1px solid #475569;
   color: #94a3b8;
+  pointer-events: auto;
+  white-space: nowrap;
+  max-width: 58%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 
 .sim-track-result-badge.danger {
-  color: #f87171;
+  color: #fca5a5;
   border-color: #dc2626;
+  background: rgba(127, 29, 29, 0.88);
 }
 
 .sim-track-result-badge.success {
-  color: #34d399;
+  color: #6ee7b7;
   border-color: #059669;
+  background: rgba(6, 78, 59, 0.88);
 }
 
 /* ==========================================================================
@@ -870,6 +974,26 @@
   }
 }
 
+@media (max-width: 868px) {
+  .sim-viewport.dual-view {
+    height: 640px;
+  }
+  .sim-dual-container {
+    flex-direction: column;
+  }
+  #dualTrackTrad {
+    border-right: none;
+    border-bottom: 3px solid #334155;
+    box-shadow: inset 0 -4px 10px rgba(0, 0, 0, 0.45);
+  }
+  #dualTrackNex {
+    box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.45);
+  }
+  .sim-track-lane {
+    height: 50%;
+  }
+}
+
 @media (max-width: 768px) {
   .comparison-score-cards-grid {
     grid-template-columns: 1fr;
@@ -879,4 +1003,5 @@
     align-items: flex-start;
   }
 }
+
 
